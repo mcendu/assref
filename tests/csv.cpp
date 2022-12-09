@@ -36,19 +36,12 @@ TEST(TestCsv, basic)
 
 	EXPECT_EQ(aref_readfield(str, f, 8, NULL), 5);
 	EXPECT_STREQ(str, "test1");
-	fclose(f);
-}
-
-TEST(TestCsv, multifield)
-{
-	char str[8];
-	FILE *f = fopen("tests/data/basic.csv", "r");
-	ASSERT_NE(f, nullptr);
-
-	EXPECT_EQ(aref_readfield(str, f, 8, NULL), 5);
-	EXPECT_STREQ(str, "test1");
 	EXPECT_EQ(aref_readfield(str, f, 8, NULL), 5);
 	EXPECT_STREQ(str, "test2");
+	EXPECT_EQ(aref_readfield(str, f, 8, NULL), 5);
+	EXPECT_STREQ(str, "test3");
+	EXPECT_EQ(aref_readfield(str, f, 8, NULL), 0);
+	EXPECT_STREQ(str, "");
 	fclose(f);
 }
 
