@@ -40,9 +40,11 @@ static inline int read_char(
 	int *quote_char,
 	size_t *count)
 {
-	if (c == ',' || c == '\n')
+	if (c == EOF)
 		return 0;
 
+	if (c == ',' || c == '\n')
+		return 0;
 	if (*it != end && c != '\r') {
 		**it = (char)c;
 		++(*it), ++(*count);
@@ -60,7 +62,7 @@ size_t aref_readfield(char *i, FILE *f, size_t size, char *last)
 	int c;
 	int q = 0;
 
-	while ((c = getc(f)) != EOF) {
+	while ((c = getc(f))) {
 		if (!read_char(c, &i, bufend, &q, &wcount))
 			break;
 	}
@@ -77,7 +79,7 @@ size_t aref_sreadfield(char *i, const char *j, size_t size, char *last)
 	int c;
 	int q = 0;
 
-	while ((c = *(j++)) != 0) {
+	while ((c = *(j++))) {
 		if (!read_char(c, &i, bufend, &q, &wcount))
 			break;
 	}
