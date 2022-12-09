@@ -11,7 +11,7 @@ if (gtest_dep.found())
 
 	subdir('data')
 
-	test('gtest test', tests, protocol: 'gtest', timeout: 3600)
+	test('gtest test', tests, protocol: 'gtest', timeout: 600)
 else
 	warning('GoogleTest not found. Tests will not be built.')
 endif
