@@ -23,12 +23,14 @@
 
 #include <csv.h>
 
+#include <stdio.h>
+
 /**
  * @param c The character read.
  * @param it A pointer to somewhere in a buffer.
  * @param end The end of the buffer pointed to by it.
  * @param quote_char Indicates whether a field is quoted.
- * @param wordcount A wordcount variable.
+ * @param count A counter that counts the number of bytes written.
  * @return 0 if no further reading is desired; 1 otherwise.
  */
 static inline int read_char(
@@ -36,14 +38,14 @@ static inline int read_char(
 	char **it,
 	char *end,
 	int *quote_char,
-	size_t *wordcount)
+	size_t *count)
 {
 	if (c == ',' || c == '\n')
 		return 0;
 
 	if (*it != end && c != '\r') {
 		**it = (char)c;
-		++(*it), ++(*wordcount);
+		++(*it), ++(*count);
 	} else {
 		// silently discard further input
 	}
