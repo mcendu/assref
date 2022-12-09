@@ -47,6 +47,7 @@ static inline int read_char(
 
 	if (*c == '"' && lastread == 0) {
 		*quote = 1;
+		*c = ' ';
 		return 1;
 	}
 
