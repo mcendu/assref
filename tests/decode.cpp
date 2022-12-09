@@ -23,7 +23,7 @@
 
 #include <decode.h>
 
-#include <pool.h>
+#include <mappool.h>
 
 #include <gtest/gtest.h>
 

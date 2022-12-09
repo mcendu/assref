@@ -28,7 +28,7 @@
 extern "C" {
 #endif
 
-#include <pool.h>
+#include <mappool.h>
 #include <stdio.h>
 
 /**

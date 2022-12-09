@@ -21,8 +21,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _AREF__POOL_H
-#define _AREF__POOL_H
+#ifndef _AREF__MAPPOOL_H
+#define _AREF__MAPPOOL_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -56,4 +56,4 @@ enum aref_mode {
 }
 #endif
 
-#endif /* !_AREF__POOL_H */
+#endif /* !_AREF__MAPPOOL_H */
