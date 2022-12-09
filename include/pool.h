@@ -24,6 +24,10 @@
 #ifndef _AREF__POOL_H
 #define _AREF__POOL_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdint.h>
 
 struct aref_mappool {
@@ -47,5 +51,9 @@ enum aref_mode {
 	AREF_MODE_CATCH,
 	AREF_MODE_MANIA
 };
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* !_AREF__POOL_H */

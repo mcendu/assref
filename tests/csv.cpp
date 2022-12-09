@@ -21,12 +21,10 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-extern "C"
-{
 #include <csv.h>
-#include <stdio.h>
-#include <stdlib.h>
-}
+
+#include <cstdio>
+#include <cstdlib>
 
 #include <gtest/gtest.h>
 

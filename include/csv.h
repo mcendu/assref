@@ -30,6 +30,10 @@
 #ifndef _AREF__CSV_H
 #define _AREF__CSV_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdio.h>
 
 /**
@@ -55,5 +59,9 @@ extern size_t aref_readfield(char *buffer, FILE *file, size_t size, char *end);
  * @return Number of bytes read.
  */
 extern size_t aref_sreadfield(char *buffer, const char *string, size_t size, char *end);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* !_AREF__CSV_H */
