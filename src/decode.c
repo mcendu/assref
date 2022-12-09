@@ -21,39 +21,30 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _AREF__POOL_H
-#define _AREF__POOL_H
+#include <decode.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include <csv.h>
+#include <stdlib.h>
 
-#include <stdint.h>
+void aref_decodepoolentry(aref_mapdata *entry, FILE *f)
+{
+	char buf[24];
+	char end;
 
-typedef struct {
-	/**
-	 * @brief A codename used to identify the beatmap.
-	 */
-	char code[8];
-	/**
-	 * @brief The BeatmapID used to query BanchoBot.
-	 */
-	uint64_t beatmapid;
-	/**
-	 * @brief The gamemode (e.g. osu!) of the beatmap.
-	 */
-	uint8_t mode;
-} aref_mapdata;
+	// Code,BeatmapID,Mode
+	aref_readfield(entry->code, f, 8, &end);
+	if (end == EOF || end == '\n')
+		return;
 
-enum aref_mode {
-	AREF_MODE_STD,
-	AREF_MODE_TAIKO,
-	AREF_MODE_CATCH,
-	AREF_MODE_MANIA
-};
+	aref_readfield(buf, f, 24, &end);
+	entry->beatmapid = strtoull(buf, NULL, 0);
+	if (end == EOF || end == '\n')
+		return;
 
-#ifdef __cplusplus
+	aref_readfield(buf, f, 24, &end);
+	entry->mode = (uint8_t)strtol(buf, NULL, 0);
+	if (end == EOF || end == '\n')
+		return;
+
+	aref_fskipline(f);
 }
-#endif
-
-#endif /* !_AREF__POOL_H */

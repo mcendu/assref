@@ -3,6 +3,7 @@ gtest_dep = dependency('gtest', main: true, required: false)
 if (gtest_dep.found())
 	tests_src = [
 		'csv.cpp',
+		'decode.cpp',
 	]
 
 	tests = executable('testassref', tests_src,

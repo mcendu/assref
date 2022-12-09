@@ -21,39 +21,26 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _AREF__POOL_H
-#define _AREF__POOL_H
+#ifndef _AREF__DECODE_H
+#define _AREF__DECODE_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <stdint.h>
+#include <pool.h>
+#include <stdio.h>
 
-typedef struct {
-	/**
-	 * @brief A codename used to identify the beatmap.
-	 */
-	char code[8];
-	/**
-	 * @brief The BeatmapID used to query BanchoBot.
-	 */
-	uint64_t beatmapid;
-	/**
-	 * @brief The gamemode (e.g. osu!) of the beatmap.
-	 */
-	uint8_t mode;
-} aref_mapdata;
-
-enum aref_mode {
-	AREF_MODE_STD,
-	AREF_MODE_TAIKO,
-	AREF_MODE_CATCH,
-	AREF_MODE_MANIA
-};
+/**
+ * @brief Decodes a CSV-encoded mappool entry.
+ *
+ * @param entry The mappool entry to which data is written.
+ * @param file A file to read data from.
+ */
+extern void aref_decodepoolentry(aref_mapdata *entry, FILE *file);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* !_AREF__POOL_H */
+#endif /* !_AREF__DECODE_H */
