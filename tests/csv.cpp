@@ -133,6 +133,9 @@ TEST(TestCsv, escape)
 	fscanf(f, "%*s\n");
 	aref_readfield(str, f, 24, NULL);
 	EXPECT_STREQ(str, "\"Hello, world\"");
+	fscanf(f, "%*s\n");
+	aref_readfield(str, f, 24, NULL);
+	EXPECT_STREQ(str, "\"");
 }
 
 TEST(TestCsv, crlf)
