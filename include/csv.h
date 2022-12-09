@@ -22,10 +22,10 @@
  */
 
 /**
- * @brief CSV parsing routines
+ * @brief CSV utilities
  *
- * This header defines functions for manipulating structured data in
- * comma-separated values (CSV).
+ * This header defines functions for reading data from comma-separated
+ * values (CSV) files.
  */
 #ifndef _AREF__CSV_H
 #define _AREF__CSV_H
@@ -59,6 +59,14 @@ extern size_t aref_readfield(char *buffer, FILE *file, size_t size, char *end);
  * @return Number of bytes read.
  */
 extern size_t aref_sreadfield(char *buffer, const char *string, size_t size, char *end);
+
+/**
+ * @brief Seek to the next line of a file.
+ *
+ * @param file The file to manipulate.
+ * @return Number of bytes skipped.
+ */
+extern size_t aref_fskipline(FILE *file);
 
 #ifdef __cplusplus
 }

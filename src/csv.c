@@ -34,13 +34,8 @@
  * @param count A counter that counts the number of bytes written.
  * @return 0 if no further reading is desired; 1 otherwise.
  */
-static inline int read_char(
-	int *c,
-	char **it,
-	char *end,
-	int *quote,
-	char lastread,
-	size_t *count)
+static inline int read_char(int *c, char **it, char *end, int *quote,
+							char lastread, size_t *count)
 {
 	if (*c == EOF)
 		return 0;
@@ -94,7 +89,8 @@ size_t aref_readfield(char *i, FILE *f, size_t size, char *last)
 	}
 
 	*i = 0;
-	if (last) *last = c;
+	if (last)
+		*last = c;
 	return wcount;
 }
 
@@ -113,6 +109,15 @@ size_t aref_sreadfield(char *i, const char *j, size_t size, char *last)
 	}
 
 	*i = 0;
-	if (last) *last = c;
+	if (last)
+		*last = c;
 	return wcount;
+}
+
+size_t aref_fskipline(FILE *f)
+{
+	size_t result = 0;
+	for (char c = getc(f); c != '\n' && c != EOF; c = getc(f))
+		++result;
+	return result + 1;
 }
