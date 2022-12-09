@@ -167,5 +167,8 @@ TEST(TestCsv, toolong)
 	EXPECT_EQ(aref_readfield(str, f, 8, NULL), 7);
 	aref_readfield(str, f, 8, NULL);
 	EXPECT_STREQ(str, "bwahaha");
+	EXPECT_EQ(aref_readfield(str, f, 8, NULL), 7);
+	aref_readfield(str, f, 8, NULL);
+	EXPECT_STREQ(str, "Nice.");
 	fclose(f);
 }
