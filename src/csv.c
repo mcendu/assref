@@ -23,24 +23,44 @@
 
 #include <csv.h>
 
+/**
+ * @param c The character read.
+ * @param it A pointer to somewhere in a buffer.
+ * @param end The end of the buffer pointed to by it.
+ * @param quote_char Indicates whether a field is quoted.
+ * @param wordcount A wordcount variable.
+ * @return 0 if no further reading is desired; 1 otherwise.
+ */
+static inline int read_char(
+	int c,
+	char **it,
+	char *end,
+	int *quote_char,
+	size_t *wordcount)
+{
+	if (c == ',' || c == '\n')
+		return 0;
+
+	if (*it != end && c != '\r') {
+		**it = (char)c;
+		++(*it), ++(*wordcount);
+	} else {
+		// silently discard further input
+	}
+
+	return 1;
+}
+
 size_t aref_readfield(char *i, FILE *f, size_t size, char *last)
 {
 	char *bufend = i + size - 1; // leave space for null termination
 	size_t wcount = 0;
 	int c;
+	int q = 0;
 
 	while ((c = getc(f)) != EOF) {
-		if (c == ',' || c == '\n')
+		if (!read_char(c, &i, bufend, &q, &wcount))
 			break;
-
-		// discard <CR> as <CR> alone as newline is very uncommon nowadays
-		// this also makes sure things won't break with <CR><LF> files on Unix
-		if (i != bufend && c != '\r') {
-			*i = (char)c;
-			++i, ++wcount;
-		} else {
-			// silently discard further input
-		}
 	}
 
 	*i = 0;
@@ -53,19 +73,11 @@ size_t aref_sreadfield(char *i, const char *j, size_t size, char *last)
 	char *bufend = i + size - 1; // leave space for null termination
 	size_t wcount = 0;
 	int c;
+	int q = 0;
 
 	while ((c = *(j++)) != 0) {
-		if (c == ',' || c == '\n')
+		if (!read_char(c, &i, bufend, &q, &wcount))
 			break;
-
-		// discard <CR> as <CR> alone as newline is very uncommon nowadays
-		// this also makes sure things won't break with <CR><LF> files on Unix
-		if (i != bufend && c != '\r') {
-			*i = (char)c;
-			++i, ++wcount;
-		} else {
-			// silently discard further input
-		}
 	}
 
 	*i = 0;
