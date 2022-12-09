@@ -63,6 +63,48 @@ TEST(TestCsv, multiline)
 	fclose(f);
 }
 
+const char multiline_str[] = "Alice,172\n"
+							 "Bob,175\n";
+
+TEST(TestCsv, string)
+{
+	char astr[8];
+	char bstr[8];
+	char aend, bend;
+	const char *ptr = multiline_str;
+
+	FILE *f = fopen("tests/data/multiline.csv", "r");
+	ASSERT_NE(f, nullptr);
+
+	// "Alice"
+	aref_readfield(astr, f, 8, &aend);
+	ptr += aref_sreadfield(bstr, ptr, 8, &bend) + 1;
+	EXPECT_STREQ(astr, bstr);
+	EXPECT_EQ(aend, bend);
+	// "172"
+	aref_readfield(astr, f, 8, &aend);
+	ptr += aref_sreadfield(bstr, ptr, 8, &bend) + 1;
+	EXPECT_STREQ(astr, bstr);
+	EXPECT_EQ(aend, bend);
+	// "Bob"
+	aref_readfield(astr, f, 8, &aend);
+	ptr += aref_sreadfield(bstr, ptr, 8, &bend) + 1;
+	EXPECT_STREQ(astr, bstr);
+	EXPECT_EQ(aend, bend);
+	// "175"
+	aref_readfield(astr, f, 8, &aend);
+	ptr += aref_sreadfield(bstr, ptr, 8, &bend) + 1;
+	EXPECT_STREQ(astr, bstr);
+	EXPECT_EQ(aend, bend);
+	// EOF
+	aref_readfield(astr, f, 8, &aend);
+	ptr += aref_sreadfield(bstr, ptr, 8, &bend) + 1;
+	EXPECT_EQ(aend, EOF);
+	EXPECT_EQ(bend, 0);
+
+	fclose(f);
+}
+
 TEST(TestCsv, empty)
 {
 	char str[8];
