@@ -129,6 +129,9 @@ TEST(TestCsv, escape)
 	EXPECT_STREQ(str, "Normal quoted text");
 	fscanf(f, "%*s\n");
 	aref_readfield(str, f, 24, NULL);
+	EXPECT_STREQ(str, "Here is a\nline break");
+	fscanf(f, "%*s\n");
+	aref_readfield(str, f, 24, NULL);
 	EXPECT_STREQ(str, "He says \"What?\"");
 	fscanf(f, "%*s\n");
 	aref_readfield(str, f, 24, NULL);

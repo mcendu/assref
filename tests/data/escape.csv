@@ -1,5 +1,7 @@
 "Your comma, here",1
 "Normal quoted text",2
+"Here is a
+line break",6
 "He says ""What?""",3
 """Hello, world""",4
 """",5
