@@ -29,27 +29,50 @@
  * @param c The character read.
  * @param it A pointer to somewhere in a buffer.
  * @param end The end of the buffer pointed to by it.
- * @param quote_char Indicates whether a field is quoted.
+ * @param quote Indicates whether a field is quoted.
+ * @param lastread The character read before c.
  * @param count A counter that counts the number of bytes written.
  * @return 0 if no further reading is desired; 1 otherwise.
  */
 static inline int read_char(
-	int c,
+	int *c,
 	char **it,
 	char *end,
-	int *quote_char,
+	int *quote,
+	char lastread,
 	size_t *count)
 {
-	if (c == EOF)
+	if (*c == EOF)
 		return 0;
 
-	if (c == ',' || c == '\n')
+	if (*c == '"' && lastread == 0) {
+		*quote = 1;
+		return 1;
+	}
+
+	if (*quote) {
+		if (lastread == '"') {
+			if (*c == ',' || *c == '\n') {
+				return 0;
+			}
+		} else if (*c == '"') {
+			return 1; // deal with it later
+		}
+	} else if (*c == ',' || *c == '\n') {
 		return 0;
-	if (*it != end && c != '\r') {
-		**it = (char)c;
+	}
+
+	if (*it != end && *c != '\r') {
+		**it = (char)*c;
 		++(*it), ++(*count);
 	} else {
 		// silently discard further input
+	}
+
+	// HACK: set character read to space after reading two consecutive
+	// quotes to prevent confusion
+	if (lastread == '"' && *c == '"') {
+		*c = ' ';
 	}
 
 	return 1;
@@ -61,10 +84,12 @@ size_t aref_readfield(char *i, FILE *f, size_t size, char *last)
 	size_t wcount = 0;
 	int c;
 	int q = 0;
+	char lastread = 0;
 
 	while ((c = getc(f))) {
-		if (!read_char(c, &i, bufend, &q, &wcount))
+		if (!read_char(&c, &i, bufend, &q, lastread, &wcount))
 			break;
+		lastread = c;
 	}
 
 	*i = 0;
@@ -78,10 +103,12 @@ size_t aref_sreadfield(char *i, const char *j, size_t size, char *last)
 	size_t wcount = 0;
 	int c;
 	int q = 0;
+	char lastread = 0;
 
 	while ((c = *(j++))) {
-		if (!read_char(c, &i, bufend, &q, &wcount))
+		if (!read_char(&c, &i, bufend, &q, lastread, &wcount))
 			break;
+		lastread = c;
 	}
 
 	*i = 0;
