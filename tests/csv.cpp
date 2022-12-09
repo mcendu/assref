@@ -139,6 +139,8 @@ TEST(TestCsv, escape)
 	fscanf(f, "%*s\n");
 	aref_readfield(str, f, 24, NULL);
 	EXPECT_STREQ(str, "\"");
+
+	fclose(f);
 }
 
 TEST(TestCsv, crlf)
@@ -172,3 +174,20 @@ TEST(TestCsv, toolong)
 	EXPECT_STREQ(str, "Nice.");
 	fclose(f);
 }
+
+TEST(TestCsv, skip)
+{
+	char str[8];
+	char end;
+	FILE *f = fopen("tests/data/multiline.csv", "r");
+	ASSERT_NE(f, nullptr);
+
+	aref_readfield(str, f, 8, &end);
+	EXPECT_STREQ(str, "Alice");
+	aref_fskipline(f);
+	aref_readfield(str, f, 8, &end);
+	EXPECT_STREQ(str, "Bob");
+
+	fclose(f);
+}
+
