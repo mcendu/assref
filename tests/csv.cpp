@@ -113,6 +113,23 @@ TEST(TestCsv, empty)
 
 	EXPECT_EQ(aref_readfield(str, f, 8, NULL), 0);
 	EXPECT_STREQ(str, "");
+
+	fclose(f);
+}
+
+TEST(TestCsv, escape)
+{
+	char str[24];
+	FILE *f = fopen("tests/data/escape.csv", "r");
+
+	aref_readfield(str, f, 24, NULL);
+	EXPECT_STREQ(str, "Your comma, here");
+	fscanf(f, "%*s\n");
+	aref_readfield(str, f, 24, NULL);
+	EXPECT_STREQ(str, "Normal quoted text");
+	fscanf(f, "%*s\n");
+	aref_readfield(str, f, 24, NULL);
+	EXPECT_STREQ(str, "He says \"What?\"");
 }
 
 TEST(TestCsv, crlf)

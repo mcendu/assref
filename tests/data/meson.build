@@ -2,6 +2,7 @@ testdata_src = [
 	'basic.csv',
 	'crlf.csv',
 	'empty.csv',
+	'escape.csv',
 	'multiline.csv',
 	'toolong.csv',
 ]
