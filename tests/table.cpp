@@ -55,20 +55,19 @@ class TestTable : public ::testing::Test
 	}
 };
 
-const char ALICE[] = "Alice";
-const char BOB[] = "Bob";
-
 const struct data dataset[] = {
-	{ ALICE, 172 },
-	{ BOB, 175 }
+	{ (const char *)"Alice", 172 },
+	{ (const char *)"Bob", 175 }
 };
 
 TEST_F(TestTable, basic)
 {
-	aref_table_insert(&t, (void *)ALICE, (void *)&(dataset[0]));
-	aref_table_insert(&t, (void *)BOB, (void *)&(dataset[1]));
+	// note that C++ is stricter about pointers than C, hence the
+	// load of pointer conversions
+	aref_table_insert(&t, (void *)"Alice", (void *)&(dataset[0]));
+	aref_table_insert(&t, (void *)"Bob", (void *)&(dataset[1]));
 
-	struct data *alice = (data *)aref_table_find(&t, (void *)ALICE);
-	EXPECT_STREQ(alice->key, ALICE);
+	struct data *alice = (data *)aref_table_find(&t, (void *)"Alice");
+	EXPECT_STREQ(alice->key, "Alice");
 	EXPECT_EQ(alice->number, 172);
 }
