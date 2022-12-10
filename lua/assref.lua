@@ -29,65 +29,65 @@ CurrentMappool = nil
 
 -- load preferences
 if hexchat.pluginprefs.mappool ~= nil then
-    local mappoolpath = hexchat.pluginprefs.mappool
-    CurrentMappool = mappool.load(mappoolpath)
+	local mappoolpath = hexchat.pluginprefs.mappool
+	CurrentMappool = mappool.load(mappoolpath)
 end
 
 local help = {
-    get = "Usage: AREF GET <preference>, get current value of a preference",
-    set = "Usage: AREF SET <preference> <value>, set preferences",
-    setmap = "Usage: AREF SETMAP <code>, set current beatmap",
-    help = [=[
+	get = "Usage: AREF GET <preference>, get current value of a preference",
+	set = "Usage: AREF SET <preference> <value>, set preferences",
+	setmap = "Usage: AREF SETMAP <code>, set current beatmap",
+	help = [=[
 AssRef commands:
 
-    GET     HELP    SET     SETMAP
+	GET	HELP	SET	SETMAP
 ]=]
 }
 
 local commands = {
-    get = function (word, word_eol)
-        local key = word[3]
-        if hexchat.pluginprefs[key] ~= nil then
-            print(("%s = %s"):format(key, hexchat.pluginprefs[key]))
-        end
-    end,
-    set = function (word, word_eol)
-        local key = word[3]
-        local value = word_eol[4]
-        hexchat.pluginprefs[key] = value
-    end,
-    setmap = function (word, word_eol)
-        local mapcode = string.lower(word_eol[3])
-        local map = CurrentMappool[mapcode]
-        if map == nil then
-            print("AssRef: beatmap not in mappool")
-        else
-            hexchat.command(("say !mp map %d %d"):format(map.beatmapid, map.mode))
-        end
-    end,
-    help = function (word, word_eol)
-        local command = word[3]
-        if command == nil then
-            command = "help"
-        end
-        if help[command] == nil then
-            command = "help"
-        end
-        print(help[command])
-    end
+	get = function (word, word_eol)
+		local key = word[3]
+		if hexchat.pluginprefs[key] ~= nil then
+			print(("%s = %s"):format(key, hexchat.pluginprefs[key]))
+		end
+	end,
+	set = function (word, word_eol)
+		local key = word[3]
+		local value = word_eol[4]
+		hexchat.pluginprefs[key] = value
+	end,
+	setmap = function (word, word_eol)
+		local mapcode = string.lower(word_eol[3])
+		local map = CurrentMappool[mapcode]
+		if map == nil then
+			print("AssRef: beatmap not in mappool")
+		else
+			hexchat.command(("say !mp map %d %d"):format(map.beatmapid, map.mode))
+		end
+	end,
+	help = function (word, word_eol)
+		local command = word[3]
+		if command == nil then
+			command = "help"
+		end
+		if help[command] == nil then
+			command = "help"
+		end
+		print(help[command])
+	end
 }
 
 hexchat.hook_command("aref",
 function (word, word_eol)
-    local command = string.lower(word[2])
-    if command == nil then
-        print("AssRef: no command specified")
-        return
-    end
-    if commands[command] == nil then
-        print(("AssRef: not an AssRef command: %s"):format(command))
-        return
-    end
-    commands[command](word, word_eol)
+	local command = string.lower(word[2])
+	if command == nil then
+		print("AssRef: no command specified")
+		return
+	end
+	if commands[command] == nil then
+		print(("AssRef: not an AssRef command: %s"):format(command))
+		return
+	end
+	commands[command](word, word_eol)
 end,
 help.help)
