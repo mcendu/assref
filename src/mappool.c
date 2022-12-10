@@ -21,52 +21,29 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _AREF__MAPPOOL_H
-#define _AREF__MAPPOOL_H
+#include <mappool.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include <stdlib.h>
+#include <string.h>
 
-#include <stdint.h>
-#include <table.h>
+#define ALLOCATION_UNIT 32
 
-typedef struct {
-	/**
-	 * @brief A codename used to identify the beatmap.
-	 */
-	char code[8];
-	/**
-	 * @brief The BeatmapID used to query BanchoBot.
-	 */
-	uint64_t beatmapid;
-	/**
-	 * @brief The gamemode (e.g. osu!) of the beatmap.
-	 */
-	uint8_t mode;
-} aref_mapdata;
-
-enum aref_mode {
-	AREF_MODE_STD,
-	AREF_MODE_TAIKO,
-	AREF_MODE_CATCH,
-	AREF_MODE_MANIA
-};
-
-typedef struct {
-	aref_mapdata *pool;
-	size_t size;
-	size_t capacity;
-	aref_table table;
-} aref_mappool;
-
-extern void aref_initmappool(aref_mappool *mappool);
-extern void aref_freemappool(aref_mappool *mappool);
-
-#define aref_findmap(mappool, code) aref_table_find((mappool)->table, (code))
-
-#ifdef __cplusplus
+unsigned hash_mapname(void *p)
+{
+	char *mapname = p;
+	return aref_djb2a(mapname, strlen(mapname));
 }
-#endif
 
-#endif /* !_AREF__MAPPOOL_H */
+void aref_initmappool(aref_mappool *mappool)
+{
+	mappool->pool = malloc(ALLOCATION_UNIT * sizeof(aref_mapdata));
+	mappool->size = 0;
+	mappool->capacity = ALLOCATION_UNIT;
+	aref_inittable(&mappool->table, hash_mapname);
+}
+
+void aref_freemappool(aref_mappool *mappool)
+{
+	free(mappool->pool);
+	mappool->pool = NULL;
+}
