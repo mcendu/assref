@@ -1,6 +1,7 @@
 src = [
 	'csv.c',
 	'decode.c',
+	'table.c',
 ]
 
 lib = library('assref', src, include_directories: inc)

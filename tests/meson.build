@@ -4,6 +4,7 @@ if (gtest_dep.found())
 	tests_src = [
 		'csv.cpp',
 		'decode.cpp',
+		'table.cpp',
 	]
 
 	tests = executable('testassref', tests_src,
