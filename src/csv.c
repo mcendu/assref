@@ -37,7 +37,7 @@
 static inline int read_char(int *c, char **it, char *end, int *quote,
 							char lastread, size_t *count)
 {
-	if (*c == EOF)
+	if (*c == EOF || *c == 0)
 		return 0;
 
 	if (*c == '"' && lastread == 0) {
