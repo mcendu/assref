@@ -139,6 +139,9 @@ TEST(TestCsv, escape)
 	fscanf(f, "%*s\n");
 	aref_readfield(str, f, 24, NULL);
 	EXPECT_STREQ(str, "\"");
+	fscanf(f, "%*s\n");
+	aref_readfield(str, f, 24, NULL);
+	EXPECT_STREQ(str, ",");
 
 	fclose(f);
 }
