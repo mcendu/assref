@@ -1,11 +1,16 @@
 src = [
 	'csv.c',
 	'decode.c',
+	'lua/mappool.c',
 	'mappool.c',
 	'table.c',
 ]
 
-lib = library('assref', src, include_directories: inc)
+lua_dep = dependency('lua5.1')
+
+lib = library('assref', src,
+	include_directories: inc,
+	dependencies: lua_dep)
 dep = declare_dependency(
 	link_with: lib,
 	include_directories: inc)

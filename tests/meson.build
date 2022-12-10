@@ -4,11 +4,12 @@ if (gtest_dep.found())
 	tests_src = [
 		'csv.cpp',
 		'decode.cpp',
+		'lua.cpp',
 		'table.cpp',
 	]
 
 	tests = executable('testassref', tests_src,
-		dependencies: [dep, gtest_dep],
+		dependencies: [dep, lua_dep, gtest_dep],
 		install: false)
 
 	subdir('data')
