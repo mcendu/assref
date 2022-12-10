@@ -42,7 +42,7 @@ void aref_decodepoolentry(aref_mapdata *entry, FILE *f)
 	char end;
 
 	// Code,BeatmapID,Mode
-	aref_readfield(entry->code, f, 8, &end);
+	aref_readfield(entry->code, f, 7, &end);
 	if (end == EOF || end == '\n')
 		return;
 

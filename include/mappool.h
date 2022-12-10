@@ -35,15 +35,15 @@ typedef struct {
 	/**
 	 * @brief A codename used to identify the beatmap.
 	 */
-	char code[8];
-	/**
-	 * @brief The BeatmapID used to query BanchoBot.
-	 */
-	uint64_t beatmapid;
+	char code[7];
 	/**
 	 * @brief The gamemode (e.g. osu!) of the beatmap.
 	 */
 	uint8_t mode;
+	/**
+	 * @brief The BeatmapID used to query BanchoBot.
+	 */
+	uint64_t beatmapid;
 } aref_mapdata;
 
 enum aref_mode {
