@@ -8,7 +8,7 @@ src = [
 
 lua_dep = dependency('lua5.1')
 
-lib = library('assref', src,
+lib = shared_library('assref', src,
 	include_directories: inc,
 	dependencies: lua_dep)
 dep = declare_dependency(
