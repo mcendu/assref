@@ -47,3 +47,14 @@ void aref_freemappool(aref_mappool *mappool)
 	free(mappool->pool);
 	mappool->pool = NULL;
 }
+
+aref_mapdata *aref_mappool_addemptyentry(aref_mappool *mappool)
+{
+	mappool->size += 1;
+	if (mappool->size > mappool->capacity) {
+		mappool->capacity += ALLOCATION_UNIT;
+		mappool->pool = realloc(mappool->pool, mappool->capacity * sizeof(aref_mapdata));
+	}
+
+	return mappool->pool + mappool->size - 1;
+}

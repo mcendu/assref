@@ -63,7 +63,10 @@ typedef struct {
 extern void aref_initmappool(aref_mappool *mappool);
 extern void aref_freemappool(aref_mappool *mappool);
 
-#define aref_findmap(mappool, code) aref_table_find((mappool)->table, (code))
+extern aref_mapdata *aref_mappool_addemptyentry(aref_mappool *mappool);
+
+#define aref_findmap(mappool, code) \
+	(aref_mapdata *)aref_table_find(&(mappool)->table, (void *)(code))
 
 #ifdef __cplusplus
 }

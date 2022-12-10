@@ -32,12 +32,14 @@ extern "C" {
 #include <stdio.h>
 
 /**
- * @brief Decodes a CSV-encoded mappool entry.
+ * @brief Decodes a mappool entry from CSV.
  *
  * @param entry The mappool entry to which data is written.
  * @param file A file to read data from.
  */
 extern void aref_decodepoolentry(aref_mapdata *entry, FILE *file);
+
+extern void aref_loadmappool(aref_mappool *mappool, FILE *file);
 
 #ifdef __cplusplus
 }

@@ -27,10 +27,10 @@
 
 #include <gtest/gtest.h>
 
-TEST(TestDecode, mappool)
+TEST(TestDecode, poolentry)
 {
 	aref_mapdata mapdata;
-	FILE *f = fopen("tests/data/pool.csv", "r");
+	FILE *f = fopen("tests/data/poolentry.csv", "r");
 
 	aref_decodepoolentry(&mapdata, f);
 	ASSERT_STREQ(mapdata.code, "rc1");
@@ -43,4 +43,20 @@ TEST(TestDecode, mappool)
 	ASSERT_STREQ(mapdata.code, "rc3");
 	aref_decodepoolentry(&mapdata, f);
 	ASSERT_STREQ(mapdata.code, "rc4");
+}
+
+TEST(TestDecode, pool)
+{
+	aref_mappool pool;
+	FILE *f = fopen("tests/data/pool.csv", "r");
+
+	aref_initmappool(&pool);
+	aref_loadmappool(&pool, f);
+
+	aref_mapdata *data = aref_findmap(&pool, "rc4");
+	ASSERT_STREQ(data->code, "rc4");
+	ASSERT_EQ(data->beatmapid, 2717089);
+
+	fclose(f);
+	aref_freemappool(&pool);
 }

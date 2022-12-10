@@ -1,6 +1,7 @@
 src = [
 	'csv.c',
 	'decode.c',
+	'mappool.c',
 	'table.c',
 ]
 

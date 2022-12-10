@@ -23,8 +23,18 @@
 
 #include <decode.h>
 
-#include <csv.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <csv.h>
+
+void aref_loadmappool(aref_mappool *pool, FILE *f)
+{
+	while (!feof(f)) {
+		aref_mapdata *data = aref_mappool_addemptyentry(pool);
+		aref_decodepoolentry(data, f);
+		aref_table_insert(&pool->table, data->code, data);
+	}
+}
 
 void aref_decodepoolentry(aref_mapdata *entry, FILE *f)
 {
