@@ -109,8 +109,8 @@ int areflua_mappool_loadfromfile(lua_State *L)
 	FILE *file = fopen(path, "r");
 
 	if (file == NULL) {
-		lua_pushfstring(L, "Cannot open file %s: %s", path, strerror(errno));
-		lua_error(L);
+		lua_pushnil(L);
+		return 1;
 	}
 
 	aref_mappool *mappool = create_mappool(L);
