@@ -44,6 +44,7 @@ void aref_initmappool(aref_mappool *mappool)
 
 void aref_freemappool(aref_mappool *mappool)
 {
+	aref_freetable(&mappool->table);
 	free(mappool->pool);
 	mappool->pool = NULL;
 }
