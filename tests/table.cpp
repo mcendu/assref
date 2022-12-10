@@ -70,4 +70,6 @@ TEST_F(TestTable, basic)
 	struct data *alice = (data *)aref_table_find(&t, (void *)"Alice");
 	EXPECT_STREQ(alice->key, "Alice");
 	EXPECT_EQ(alice->number, 172);
+
+	EXPECT_EQ(aref_table_find(&t, (void *)"Carol"), nullptr);
 }
