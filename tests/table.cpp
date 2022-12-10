@@ -60,6 +60,8 @@ const struct data dataset[] = {
 	{ (const char *)"Bob", 175 }
 };
 
+using DeathTestTable = TestTable;
+
 TEST_F(TestTable, basic)
 {
 	// note that C++ is stricter about pointers than C, hence the
@@ -72,4 +74,12 @@ TEST_F(TestTable, basic)
 	EXPECT_EQ(alice->number, 172);
 
 	EXPECT_EQ(aref_table_find(&t, (void *)"Carol"), nullptr);
+}
+
+TEST_F(DeathTestTable, free)
+{
+	aref_freetable(&t);
+	ASSERT_DEATH({
+		aref_table_insert(&t, (void *)"Alice", (void *)&(dataset[0]));
+	}, ".*");
 }
