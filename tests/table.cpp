@@ -76,13 +76,9 @@ TEST_F(TestTable, basic)
 	EXPECT_EQ(aref_table_find(&t, (void *)"Carol"), nullptr);
 }
 
-TEST_F(DeathTestTable, free)
+TEST_F(TestTable, free)
 {
 	aref_tableentry *a = &t.pool[0];
 	aref_freetable(&t);
 	EXPECT_EQ(t.pool, nullptr);
-	/* checks if the pool has been freed; AddressSanitizer required */
-	ASSERT_DEBUG_DEATH({
-		a->hash = 114514;
-	}, ".*");
 }
