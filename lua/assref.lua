@@ -89,7 +89,13 @@ local commands = {
 		hexchat.pluginprefs[key] = nil
 		loadPreferences()
 	end,
+
 	setmap = function(word, word_eol)
+		if CurrentMappool == nil then
+			hexchat.emit_print("Private Message", "AssRef",
+				"no mappool loaded; use /AREF SET MAPPOOL to load one")
+		end
+
 		local mapcode = string.lower(word_eol[3])
 		local map = CurrentMappool[mapcode]
 		if map == nil then
