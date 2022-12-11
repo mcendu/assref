@@ -7,6 +7,7 @@ on:
     branches: [ "main" ]
 
 env:
+  packagename: assref-git-${{ github.sha }}
   prefix: ${{ github.workspace }}/builddir/assref-git-${{ github.sha }}
 
 jobs:
@@ -34,23 +35,24 @@ jobs:
           --buildtype ${{ matrix.buildtype }} \
           --prefix=${{ env.prefix }} \
           -Dlua=lua5.3 \
-          ${{ github.workspace }}/builddir
+          builddir
 
     - name: Build
       run: |
-        ninja -C ${{ github.workspace }}/builddir
-        ninja -C ${{ github.workspace }}/builddir test
+        ninja -C builddir
+        ninja -C builddir test
+        ninja -C builddir install
 
     - name: Package
       if: github.event_name == 'push'
+      working-directory: ./builddir
       run: |
-        ninja -C ${{ github.workspace }}/builddir install
-        tar -cJf ${{ env.prefix }}.tar.xz ${{ env.prefix }}
+        tar -cJf ${{ env.packagename }}.tar.xz ${{ env.packagename }}
 
     - name: Upload artifacts
       if: github.event_name == 'push'
       uses: actions/upload-artifact@v3
       with:
         name: assref
-        path: builddir/${{ env.prefix }}.tar.xz
+        path: builddir/${{ env.packagename }}.tar.xz
 
