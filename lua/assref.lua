@@ -60,7 +60,8 @@ local commands = {
 		local mapcode = string.lower(word_eol[3])
 		local map = CurrentMappool[mapcode]
 		if map == nil then
-			print("AssRef: beatmap not in mappool")
+			hexchat.emit_print("Private Message", "AssRef",
+				"beatmap not in mappool")
 		else
 			hexchat.command(("say !mp map %d %d"):format(map.beatmapid, map.mode))
 		end
@@ -79,13 +80,15 @@ local commands = {
 
 hexchat.hook_command("aref",
 function (word, word_eol)
-	local command = string.lower(word[2])
-	if command == nil then
-		print("AssRef: no command specified")
+	if word[2] == nil then
+		hexchat.emit_print("Private Message", "AssRef",
+			"no subcommand specified")
 		return
 	end
+	local command = string.lower(word[2])
 	if commands[command] == nil then
-		print(("AssRef: not an AssRef command: %s"):format(command))
+		hexchat.emit_print("Private Message", "AssRef",
+			("not an AssRef subcommand: %s"):format(command))
 		return
 	end
 	commands[command](word, word_eol)
