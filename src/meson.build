@@ -11,6 +11,7 @@ lua_dep = dependency('lua5.1')
 lib = shared_library('assref', src,
 	include_directories: inc,
 	install: true,
+	install_dir: get_option('libdir') / 'lua',
 	dependencies: lua_dep)
 dep = declare_dependency(
 	link_with: lib,

@@ -6,4 +6,5 @@ cp = find_program('cp', 'build/copy.py', required: false)
 
 subdir('include')
 subdir('src')
+subdir('lua')
 subdir('tests')
