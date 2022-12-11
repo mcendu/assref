@@ -1,6 +1,6 @@
 gtest_dep = dependency('gtest', main: true, required: false)
 
-if (gtest_dep.found())
+if (gtest_dep.found() and add_languages('cpp', native: false, required: false))
 	tests_src = [
 		'csv.cpp',
 		'decode.cpp',
@@ -16,5 +16,5 @@ if (gtest_dep.found())
 
 	test('gtest test', tests, protocol: 'gtest', timeout: 600)
 else
-	warning('GoogleTest not found. Tests will not be built.')
+	warning('Required programs and libraries missing. Tests will not be built.')
 endif

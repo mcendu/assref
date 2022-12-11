@@ -1,4 +1,4 @@
-project('assref', 'c', 'cpp',
+project('assref', 'c',
 	meson_version: '>=0.55.0',
 	license: 'MIT')
 
