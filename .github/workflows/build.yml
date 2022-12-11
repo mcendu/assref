@@ -48,14 +48,14 @@ jobs:
       if: github.event_name == 'push'
       working-directory: ./builddir
       run: |
-        tar -cJf ${{ env.packagename }}.tar.xz ${{ env.packagename }}
+        tar -cf ${{ env.packagename }}.tar ${{ env.packagename }}
 
     - name: Upload artifacts
       if: github.event_name == 'push'
       uses: actions/upload-artifact@v3
       with:
-        name: ${{ env.packagename }}
-        path: builddir/${{ env.packagename }}.tar.xz
+        name: ${{ env.packagename }}.tar
+        path: builddir/${{ env.packagename }}.tar
 
   build-windows:
     name: build (Windows x64)
