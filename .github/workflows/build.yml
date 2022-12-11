@@ -1,0 +1,55 @@
+name: CMake
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+    
+env:
+  prefix: ${{ github.workspace }}/builddir/assref-git-${{ github.sha }}
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        buildtype: ["debug", "release"]
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Meson and dependencies (Linux)
+      run: |
+        sudo apt-get update
+        sudo apt-get install meson
+        sudo apt-get install liblua5.3-0
+        sudo apt-get install liblua5.3-dev
+
+    - name: Configure project
+      run: |
+        meson setup \
+          --backend ninja \
+          --buildtype ${{ matrix.buildtype }} \
+          --prefix=${{ env.prefix }} \
+          -Dlua=lua5.3 \
+          ${{ github.workspace }}/builddir
+      
+    - name: Build
+      run: |
+        ninja -C ${{ github.workspace }}/builddir
+        ninja -C ${{ github.workspace }}/builddir test
+      
+    - name: Package
+      if: github.event_name == 'push'
+      run: |
+        ninja -C ${{ github.workspace }}/builddir install
+        tar -cJf ${{ env.prefix }}.tar.xz ${{ env.prefix }}
+        
+    - name: Upload artifacts
+      if: github.event_name == 'push'
+      uses: actions/upload-artifact@v3
+      with:
+        name: assref
+        path: builddir/${{ env.prefix }}.tar.xz
+        
