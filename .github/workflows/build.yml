@@ -58,7 +58,7 @@ jobs:
         path: builddir/${{ env.packagename }}.tar.xz
 
   build-windows:
-    name: build (mingw-w64)
+    name: build (Windows x64)
     strategy:
       matrix:
         buildtype: ["debug", "release"]
