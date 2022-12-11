@@ -25,15 +25,15 @@ hexchat.register("AssRef", "0.1", "osu! referee's robotic assistant")
 
 local mappool = require("assref.mappool");
 
-CurrentMappool = nil
+local currentMappool = nil
 
 -- load preferences
 local function loadPreferences()
 	if hexchat.pluginprefs.mappool ~= nil then
 		local mappoolpath = hexchat.pluginprefs.mappool
-		CurrentMappool = mappool.load(mappoolpath)
+		currentMappool = mappool.load(mappoolpath)
 	else
-		CurrentMappool = nil
+		currentMappool = nil
 	end
 end
 
@@ -91,13 +91,13 @@ local commands = {
 	end,
 
 	setmap = function(word, word_eol)
-		if CurrentMappool == nil then
+		if currentMappool == nil then
 			hexchat.emit_print("Private Message", "AssRef",
 				"no mappool loaded; use /AREF SET MAPPOOL to load one")
 		end
 
 		local mapcode = string.lower(word_eol[3])
-		local map = CurrentMappool[mapcode]
+		local map = currentMappool[mapcode]
 		if map == nil then
 			hexchat.emit_print("Private Message", "AssRef",
 				"beatmap not in mappool")
