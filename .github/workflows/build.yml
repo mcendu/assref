@@ -1,4 +1,4 @@
-name: Meson build
+name: Meson
 
 on:
   push:
@@ -6,21 +6,22 @@ on:
   pull_request:
     branches: [ "main" ]
 
-env:
-  packagename: assref-git-${{ github.sha }}
-  prefix: ${{ github.workspace }}/builddir/assref-git-${{ github.sha }}
 
 jobs:
-  build:
+  build_linux:
+    name: build (Ubuntu)
     strategy:
       matrix:
         buildtype: ["debug", "release"]
     runs-on: ubuntu-latest
+    env:
+      packagename: assref-ubuntu-git_${{ github.sha }}-${{ matrix.buildtype }}
+      prefix: ${{ github.workspace }}/builddir/assref-ubuntu-git_${{ github.sha }}-${{ matrix.buildtype }}
 
     steps:
     - uses: actions/checkout@v3
 
-    - name: Install Meson and dependencies (Linux)
+    - name: Install Meson and dependencies
       run: |
         sudo apt-get update
         sudo apt-get install \
@@ -53,6 +54,51 @@ jobs:
       if: github.event_name == 'push'
       uses: actions/upload-artifact@v3
       with:
-        name: assref
+        name: ${{ env.packagename }}
         path: builddir/${{ env.packagename }}.tar.xz
 
+  build-windows:
+    name: build (mingw-w64)
+    strategy:
+      matrix:
+        buildtype: ["debug", "release"]
+    runs-on: windows-latest
+    env:
+      packagename: assref-win64-git_${{ github.sha }}-${{ matrix.buildtype }}
+      prefix: ${{ github.workspace }}/builddir/assref-win64-git_${{ github.sha }}-${{ matrix.buildtype }}
+    defaults:
+      run:
+        shell: msys2 {0}
+
+    steps:
+    - uses: msys2/setup-msys2@v2
+      with:
+        msystem: MINGW64
+        pacboy: |-
+          gcc:p
+          meson:p
+          luajit:p
+          gtest:p
+    - uses: actions/checkout@v3
+
+    - name: Configure project
+      run: |
+        meson setup \
+          --backend ninja \
+          --buildtype ${{ matrix.buildtype }} \
+          --prefix=${{ env.prefix }} \
+          -Dlua=luajit \
+          builddir
+
+    - name: Build
+      run: |
+        ninja -C builddir
+        ninja -C builddir test
+        ninja -C builddir install
+
+    - name: Upload artifacts
+      if: github.event_name == 'push'
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.packagename }}
+        path: builddir/${{ env.packagename }}
