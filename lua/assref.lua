@@ -54,18 +54,38 @@ AssRef commands:
 local commands = {
 	get = function(word, word_eol)
 		local key = word[3]
+		if key == nil then
+			hexchat.emit_print("Private Message", "AssRef",
+				"no option specified")
+			return hexchat.EAT_NONE
+		end
 		if hexchat.pluginprefs[key] ~= nil then
 			print(("%s = %s"):format(key, hexchat.pluginprefs[key]))
 		end
 	end,
 	set = function(word, word_eol)
 		local key = word[3]
+		if key == nil then
+			hexchat.emit_print("Private Message", "AssRef",
+				"no option specified")
+			return
+		end
 		local value = word_eol[4]
+		if value == nil then
+			hexchat.emit_print("Private Message", "AssRef",
+				"no option value specified; use /AREF UNSET to clear an option")
+			return
+		end
 		hexchat.pluginprefs[key] = value
 		loadPreferences()
 	end,
 	unset = function(word, word_eol)
 		local key = word[3]
+		if key == nil then
+			hexchat.emit_print("Private Message", "AssRef",
+				"no option specified")
+			return
+		end
 		hexchat.pluginprefs[key] = nil
 		loadPreferences()
 	end,
@@ -96,14 +116,15 @@ hexchat.hook_command("aref",
 		if word[2] == nil then
 			hexchat.emit_print("Private Message", "AssRef",
 				"no subcommand specified")
-			return
+			return hexchat.EAT_PLUGIN
 		end
 		local command = string.lower(word[2])
 		if commands[command] == nil then
 			hexchat.emit_print("Private Message", "AssRef",
 				("not an AssRef subcommand: %s"):format(command))
-			return
+			return hexchat.EAT_PLUGIN
 		end
 		commands[command](word, word_eol)
+		return hexchat.EAT_PLUGIN
 	end,
 	help.help)
