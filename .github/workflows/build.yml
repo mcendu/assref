@@ -41,7 +41,7 @@ jobs:
     - name: Build
       run: |
         ninja -C builddir
-        ninja -C builddir test
+        meson test --verbose -C builddir
         ninja -C builddir install
 
     - name: Package
@@ -96,7 +96,7 @@ jobs:
     - name: Build
       run: |
         ninja -C builddir
-        ninja -C builddir test
+        meson test --verbose -C builddir
         ninja -C builddir install
 
     - name: Package
