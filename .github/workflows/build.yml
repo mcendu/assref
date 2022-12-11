@@ -76,6 +76,7 @@ jobs:
         msystem: MINGW64
         pacboy: |-
           gcc:p
+          pkgconf:p
           meson:p
           luajit:p
           gtest:p
