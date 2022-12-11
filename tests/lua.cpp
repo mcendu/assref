@@ -24,6 +24,8 @@
 #include <gtest/gtest.h>
 #include <luaapi.h>
 
+#include <mappool.h>
+
 #include <lua.hpp>
 
 class TestLuaApi : public ::testing::Test
@@ -43,20 +45,43 @@ class TestLuaApi : public ::testing::Test
 	}
 };
 
-const char script_mappool_index[] =
-"testpool = mappool.load('tests/data/pool.csv');\n"
-"return testpool['rc4'];\n";
+const char script_mappool_index[]
+	= "local testpool = mappool.load('tests/data/pool.csv')\n"
+	  "return testpool['rc4']\n";
+
+const char script_mappool_newindex[]
+	= "local testpool = mappool.create()\n"
+	  "testpool['warm1'] = { beatmapid = 75, mode = 0 }\n"
+	  "return testpool";
 
 TEST_F(TestLuaApi, mappool)
 {
+	int luaerror;
+
 	lua_pushcfunction(L, luaopen_assref_mappool);
 	lua_pushstring(L, "assref.mappool");
 	lua_call(L, 1, 1);
 	lua_setglobal(L, "mappool");
-	ASSERT_EQ(luaL_dostring(L, script_mappool_index), 0);
 
-	size_t top = lua_gettop(L);
-	lua_getfield(L, top, "beatmapid");
-	lua_Integer poolid = lua_tointeger(L, -1);
-	EXPECT_EQ(poolid, 2717089);
+	luaerror = luaL_dostring(L, script_mappool_index);
+	EXPECT_EQ(luaerror, 0);
+	if (luaerror == 0) {
+		size_t top = lua_gettop(L);
+		lua_getfield(L, top, "beatmapid");
+		lua_Integer poolid = lua_tointeger(L, -1);
+		EXPECT_EQ(poolid, 2717089);
+	}
+
+	luaerror = luaL_dostring(L, script_mappool_newindex);
+	EXPECT_EQ(luaerror, 0);
+	if (luaerror == 0) {
+		size_t top = lua_gettop(L);
+		aref_mappool *testpool = (aref_mappool *)lua_touserdata(L, top);
+		aref_mapdata *discoprince = aref_findmap(testpool, "warm1");
+		EXPECT_NE(discoprince, nullptr);
+		if (discoprince != nullptr) {
+			EXPECT_EQ(discoprince->mode, 0);
+			EXPECT_EQ(discoprince->beatmapid, 75);
+		}
+	}
 }

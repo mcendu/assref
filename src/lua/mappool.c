@@ -91,6 +91,38 @@ int areflua_mappool_index(lua_State *L)
 }
 
 /**
+ * metatable(mappool).__newindex(mappool, key, value)
+ */
+int areflua_mappool_add(lua_State *L)
+{
+	aref_mappool *mappool = lua_touserdata(L, 1);
+	const char *untruncated_mapcode = lua_tostring(L, 2);
+
+	// truncate mapcode so we are not left with something
+	// inaccessible after a too long mapcode is inputted
+	char mapcode[7];
+	strncpy(mapcode, untruncated_mapcode, 6);
+
+	lua_getfield(L, 3, "beatmapid");
+	uint64_t beatmapid = (uint64_t)lua_tointeger(L, 4);
+	lua_getfield(L, 3, "mode");
+	uint8_t mode = (uint8_t)lua_tointeger(L, 5);
+
+	aref_mapdata *map = aref_findmap(mappool, mapcode);
+	if (map == NULL) {
+		map = aref_mappool_addemptyentry(mappool);
+		strncpy(map->code, mapcode, 6);
+		map->code[6] = 0;
+		aref_table_insert(&mappool->table, mapcode, map);
+	}
+
+	map->beatmapid = beatmapid;
+	map->mode = mode;
+
+	return 0;
+}
+
+/**
  * mappool.load(file)
  */
 int areflua_mappool_loadfromfile(lua_State *L)
@@ -137,6 +169,8 @@ int luaopen_assref_mappool(lua_State *L)
 	lua_setfield(L, argc + 1, "load");
 	lua_pushcfunction(L, areflua_mappool_index);
 	lua_setfield(L, argc + 1, "__index");
+	lua_pushcfunction(L, areflua_mappool_add);
+	lua_setfield(L, argc + 1, "__newindex");
 	lua_pushcfunction(L, areflua_mappool_destroy);
 	lua_setfield(L, argc + 1, "__gc");
 
