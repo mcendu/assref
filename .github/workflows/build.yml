@@ -48,14 +48,14 @@ jobs:
       if: github.event_name == 'push'
       working-directory: ./builddir
       run: |
-        tar -cf ${{ env.packagename }}.tar ${{ env.packagename }}
+        tar -cJf ${{ env.packagename }}.tar.xz ${{ env.packagename }}
 
     - name: Upload artifacts
       if: github.event_name == 'push'
       uses: actions/upload-artifact@v3
       with:
-        name: ${{ env.packagename }}.tar
-        path: builddir/${{ env.packagename }}.tar
+        name: ${{ env.packagename }}.tar.xz
+        path: builddir/${{ env.packagename }}.tar.xz
 
   build-windows:
     name: build (Windows x64)
@@ -74,6 +74,8 @@ jobs:
     - uses: msys2/setup-msys2@v2
       with:
         msystem: MINGW64
+        install: |-
+          zip
         pacboy: |-
           gcc:p
           pkgconf:p
@@ -97,9 +99,15 @@ jobs:
         ninja -C builddir test
         ninja -C builddir install
 
+    - name: Package
+      if: github.event_name == 'push'
+      working-directory: ./builddir
+      run: |
+        zip -r ${{ env.packagename }}.zip ${{ env.packagename }}
+
     - name: Upload artifacts
       if: github.event_name == 'push'
       uses: actions/upload-artifact@v3
       with:
-        name: ${{ env.packagename }}
-        path: builddir/${{ env.packagename }}
+        name: ${{ env.packagename }}.zip
+        path: builddir/${{ env.packagename }}.zip
