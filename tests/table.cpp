@@ -78,8 +78,11 @@ TEST_F(TestTable, basic)
 
 TEST_F(DeathTestTable, free)
 {
+	aref_tableentry *a = &t.pool[0];
 	aref_freetable(&t);
-	ASSERT_DEATH({
-		aref_table_insert(&t, (void *)"Alice", (void *)&(dataset[0]));
+	EXPECT_EQ(t.pool, nullptr);
+	/* checks if the pool has been freed; AddressSanitizer required */
+	ASSERT_DEBUG_DEATH({
+		a->hash = 114514;
 	}, ".*");
 }
