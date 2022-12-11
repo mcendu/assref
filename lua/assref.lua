@@ -28,14 +28,21 @@ local mappool = require("assref.mappool");
 CurrentMappool = nil
 
 -- load preferences
-if hexchat.pluginprefs.mappool ~= nil then
-	local mappoolpath = hexchat.pluginprefs.mappool
-	CurrentMappool = mappool.load(mappoolpath)
+local function loadPreferences()
+	if hexchat.pluginprefs.mappool ~= nil then
+		local mappoolpath = hexchat.pluginprefs.mappool
+		CurrentMappool = mappool.load(mappoolpath)
+	else
+		CurrentMappool = nil
+	end
 end
+
+loadPreferences()
 
 local help = {
 	get = "Usage: AREF GET <preference>, get current value of a preference",
 	set = "Usage: AREF SET <preference> <value>, set preferences",
+	unset = "Usage: AREF UNSET <preference>, forget a plugin preference",
 	setmap = "Usage: AREF SETMAP <code>, set current beatmap",
 	help = [=[
 AssRef commands:
@@ -45,18 +52,24 @@ AssRef commands:
 }
 
 local commands = {
-	get = function (word, word_eol)
+	get = function(word, word_eol)
 		local key = word[3]
 		if hexchat.pluginprefs[key] ~= nil then
 			print(("%s = %s"):format(key, hexchat.pluginprefs[key]))
 		end
 	end,
-	set = function (word, word_eol)
+	set = function(word, word_eol)
 		local key = word[3]
 		local value = word_eol[4]
 		hexchat.pluginprefs[key] = value
+		loadPreferences()
 	end,
-	setmap = function (word, word_eol)
+	unset = function(word, word_eol)
+		local key = word[3]
+		hexchat.pluginprefs[key] = nil
+		loadPreferences()
+	end,
+	setmap = function(word, word_eol)
 		local mapcode = string.lower(word_eol[3])
 		local map = CurrentMappool[mapcode]
 		if map == nil then
@@ -66,7 +79,7 @@ local commands = {
 			hexchat.command(("say !mp map %d %d"):format(map.beatmapid, map.mode))
 		end
 	end,
-	help = function (word, word_eol)
+	help = function(word, word_eol)
 		local command = word[3]
 		if command == nil then
 			command = "help"
@@ -79,18 +92,18 @@ local commands = {
 }
 
 hexchat.hook_command("aref",
-function (word, word_eol)
-	if word[2] == nil then
-		hexchat.emit_print("Private Message", "AssRef",
-			"no subcommand specified")
-		return
-	end
-	local command = string.lower(word[2])
-	if commands[command] == nil then
-		hexchat.emit_print("Private Message", "AssRef",
-			("not an AssRef subcommand: %s"):format(command))
-		return
-	end
-	commands[command](word, word_eol)
-end,
-help.help)
+	function(word, word_eol)
+		if word[2] == nil then
+			hexchat.emit_print("Private Message", "AssRef",
+				"no subcommand specified")
+			return
+		end
+		local command = string.lower(word[2])
+		if commands[command] == nil then
+			hexchat.emit_print("Private Message", "AssRef",
+				("not an AssRef subcommand: %s"):format(command))
+			return
+		end
+		commands[command](word, word_eol)
+	end,
+	help.help)
