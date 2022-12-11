@@ -1,0 +1,2 @@
+option('lua', type: 'string', value: 'lua5.1',
+	description: 'Version of Lua to link against when building')

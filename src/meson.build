@@ -6,7 +6,7 @@ src = [
 	'table.c',
 ]
 
-lua_dep = dependency('lua5.1')
+lua_dep = dependency(get_option('lua'))
 
 lib = shared_library('assref', src,
 	include_directories: inc,
