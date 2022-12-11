@@ -86,7 +86,7 @@ jobs:
         meson setup \
           --backend ninja \
           --buildtype ${{ matrix.buildtype }} \
-          --prefix=${{ env.prefix }} \
+          --prefix="${{ env.prefix }}" \
           -Dlua=luajit \
           builddir
 
