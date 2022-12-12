@@ -35,7 +35,7 @@ void aref_initmappool(aref_mappool *mappool)
 	mappool->pool = malloc(ALLOCATION_UNIT * sizeof(aref_mapdata));
 	mappool->size = 0;
 	mappool->capacity = ALLOCATION_UNIT;
-	aref_inittable(&mappool->table, aref_hash_string);
+	aref_inittable(&mappool->table, aref_cihash_string);
 }
 
 void aref_freemappool(aref_mappool *mappool)
