@@ -94,6 +94,13 @@ extern void aref_freetable(aref_table *h);
  * @return The hash.
  */
 extern unsigned aref_djb2a(const void *data, size_t size);
+/**
+ * @brief Gets the hash of a string.
+ *
+ * @param data The string to be hashed.
+ * @return The hash.
+ */
+extern unsigned aref_hash_string(void *data);
 
 #ifdef __cplusplus
 }

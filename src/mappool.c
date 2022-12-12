@@ -26,20 +26,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define ALLOCATION_UNIT 32
+#include <table.h>
 
-unsigned hash_mapname(void *p)
-{
-	char *mapname = p;
-	return aref_djb2a(mapname, strlen(mapname));
-}
+#define ALLOCATION_UNIT 32
 
 void aref_initmappool(aref_mappool *mappool)
 {
 	mappool->pool = malloc(ALLOCATION_UNIT * sizeof(aref_mapdata));
 	mappool->size = 0;
 	mappool->capacity = ALLOCATION_UNIT;
-	aref_inittable(&mappool->table, hash_mapname);
+	aref_inittable(&mappool->table, aref_hash_string);
 }
 
 void aref_freemappool(aref_mappool *mappool)

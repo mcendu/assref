@@ -99,3 +99,9 @@ unsigned aref_djb2a(const void *data, size_t size)
 
 	return hash;
 }
+
+unsigned aref_hash_string(void *p)
+{
+	char *mapname = p;
+	return aref_djb2a(mapname, strlen(mapname));
+}
