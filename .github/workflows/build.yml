@@ -27,6 +27,7 @@ jobs:
         sudo apt-get install \
           meson \
           liblua5.3-dev \
+          libsqlite3-dev \
           libgtest-dev
 
     - name: Configure project
@@ -81,6 +82,7 @@ jobs:
           pkgconf:p
           meson:p
           luajit:p
+          sqlite3:p
           gtest:p
     - uses: actions/checkout@v3
 

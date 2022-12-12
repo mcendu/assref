@@ -9,6 +9,7 @@ lib_deps = []
 
 lua_dep = dependency(get_option('lua'), required: false)
 hexchat_dep = dependency('hexchat-plugin', required: false)
+sqlite3_dep = dependency('sqlite3', static: true)
 
 if lua_dep.found()
 	lib_deps += lua_dep
