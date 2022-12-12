@@ -44,6 +44,8 @@ local help = {
 	set = "Usage: AREF SET <preference> <value>, set preferences",
 	unset = "Usage: AREF UNSET <preference>, forget a plugin preference",
 	setmap = "Usage: AREF SETMAP <code>, set current beatmap",
+	addmap = "Usage: AREF ADDMAP <code> <id> <mode>, temporarily add a beatmap"
+		+ " (e.g. a warmup map) to the mappool",
 	help = [=[
 AssRef commands:
 
@@ -96,7 +98,7 @@ local commands = {
 				"no mappool loaded; use /AREF SET MAPPOOL to load one")
 		end
 
-		local mapcode = string.lower(word_eol[3])
+		local mapcode = string.lower(word[3])
 		local map = currentMappool[mapcode]
 		if map == nil then
 			hexchat.emit_print("Private Message", "AssRef",
@@ -104,6 +106,21 @@ local commands = {
 		else
 			hexchat.command(("say !mp map %d %d"):format(map.beatmapid, map.mode))
 		end
+	end,
+	addmap = function(word, word_eol)
+		if currentMappool == nil then
+			hexchat.emit_print("Private Message", "AssRef",
+				"no mappool loaded; creating temporary mappool. "
+				+ "use /AREF SET MAPPOOL to load one")
+			currentMappool = mappool.create()
+		end
+
+		local mapcode = string.lower(word[3])
+		local newmap = {
+			beatmapid = word[4],
+			mode = word[5]
+		}
+		currentMappool[mapcode] = newmap
 	end,
 	help = function(word, word_eol)
 		local command = word[3]
