@@ -113,7 +113,7 @@ int areflua_mappool_add(lua_State *L)
 		map = aref_mappool_addemptyentry(mappool);
 		strncpy(map->code, mapcode, 6);
 		map->code[6] = 0;
-		aref_table_insert(&mappool->table, mapcode, map);
+		aref_mappool_insert(mappool, map);
 	}
 
 	map->beatmapid = beatmapid;

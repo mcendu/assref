@@ -32,7 +32,7 @@ void aref_loadmappool(aref_mappool *pool, FILE *f)
 	while (!feof(f)) {
 		aref_mapdata *data = aref_mappool_addemptyentry(pool);
 		aref_decodepoolentry(data, f);
-		aref_table_insert(&pool->table, data->code, data);
+		aref_mappool_insert(pool, data);
 	}
 }
 

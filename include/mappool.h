@@ -65,6 +65,8 @@ extern void aref_freemappool(aref_mappool *mappool);
 
 extern aref_mapdata *aref_mappool_addemptyentry(aref_mappool *mappool);
 
+#define aref_mappool_insert(mappool, data) \
+	aref_table_insert(&(mappool)->table, (void *)data->code, (void *)data)
 #define aref_mappool_find(mappool, code) \
 	(aref_mapdata *)aref_table_find(&(mappool)->table, (void *)(code))
 
