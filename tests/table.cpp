@@ -72,7 +72,6 @@ TEST_F(TestTable, basic)
 
 TEST_F(TestTable, free)
 {
-	aref_tableentry *a = &t.pool[0];
 	aref_freetable(&t);
 	EXPECT_EQ(t.pool, nullptr);
 }
