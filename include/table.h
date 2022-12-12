@@ -43,7 +43,7 @@ struct aref_tableentry {
 	struct aref_tableentry *cdr;
 };
 
-typedef unsigned (*aref_hashfunc)(void *key);
+typedef unsigned (*aref_hashfunc)(const void *key);
 
 typedef struct {
 	aref_hashfunc hashfunc;
@@ -100,7 +100,7 @@ extern unsigned aref_djb2a(const void *data, size_t size);
  * @param data The string to be hashed.
  * @return The hash.
  */
-extern unsigned aref_hash_string(void *data);
+extern unsigned aref_hash_string(const void *data);
 
 #ifdef __cplusplus
 }

@@ -27,7 +27,7 @@
 
 #include <gtest/gtest.h>
 
-unsigned hashstr(void *p)
+unsigned hashstr(const void *p)
 {
 	const char *str = (const char *)p;
 	return aref_djb2a(str, strlen(str));
