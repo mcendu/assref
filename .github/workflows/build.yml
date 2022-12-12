@@ -1,4 +1,4 @@
-name: Meson
+name: Build
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
 
 jobs:
   build_linux:
-    name: build (Ubuntu)
+    name: Ubuntu
     strategy:
       matrix:
         buildtype: ["debug", "release"]
@@ -58,7 +58,7 @@ jobs:
         path: builddir/${{ env.packagename }}.tar.xz
 
   build-windows:
-    name: build (Windows x64)
+    name: Windows x64
     strategy:
       matrix:
         buildtype: ["debug", "release"]
