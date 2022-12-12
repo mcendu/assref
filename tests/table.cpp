@@ -49,10 +49,8 @@ class TestTable : public ::testing::Test
 	}
 };
 
-const struct data dataset[] = {
-	{ (const char *)"Alice", 172 },
-	{ (const char *)"Bob", 175 }
-};
+const struct data dataset[]
+	= {{(const char *)"Alice", 172}, {(const char *)"Bob", 175}};
 
 using DeathTestTable = TestTable;
 
@@ -74,4 +72,10 @@ TEST_F(TestTable, free)
 {
 	aref_freetable(&t);
 	EXPECT_EQ(t.pool, nullptr);
+}
+
+TEST_F(TestTable, cihash)
+{
+	EXPECT_EQ(aref_cihash_string("Hello world"),
+			  aref_cihash_string("hELLO WORLD"));
 }
