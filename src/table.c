@@ -107,7 +107,7 @@ inline unsigned aref_hash_string(const void *p)
 	return aref_djb2a(mapname, strlen(mapname));
 }
 
-inline unsigned aref_cihash_string(const void *data)
+unsigned aref_cihash_string(const void *data)
 {
 	const unsigned char *str = data;
 	unsigned hash = 5381;
