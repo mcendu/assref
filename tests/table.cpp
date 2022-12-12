@@ -68,6 +68,39 @@ TEST_F(TestTable, basic)
 	EXPECT_EQ(aref_table_find(&t, (void *)"Carol"), nullptr);
 }
 
+extern "C" struct int_indexed_data {
+	uint32_t key;
+	uint32_t data;
+};
+
+unsigned hash_int(const void *x)
+{
+	return aref_djb2a(x, sizeof(int));
+}
+
+// https://arxiv.org/abs/2001.05304
+#define lcg64(x) (0xd1342543de82ef95 * (x) + 1)
+
+TEST_F(TestTable, largedata)
+{
+	uint64_t lcg_state = 128;
+	int_indexed_data *data = new int_indexed_data[500];
+
+	t.hashfunc = hash_int;
+	for (int i = 0; i < 500; ++i) {
+		uint32_t key = i;
+		lcg_state = lcg64(lcg_state);
+		uint32_t value = lcg_state >> 32;
+		data[i] = (int_indexed_data){key, value};
+		aref_table_insert(&t, &key, &data[i]);
+	}
+
+	int lookup = 499;
+	ASSERT_NE(aref_table_find(&t, &lookup), nullptr);
+
+	delete []data;
+}
+
 TEST_F(TestTable, free)
 {
 	aref_freetable(&t);
