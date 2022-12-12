@@ -27,18 +27,12 @@
 
 #include <gtest/gtest.h>
 
-unsigned hashstr(const void *p)
-{
-	const char *str = (const char *)p;
-	return aref_djb2a(str, strlen(str));
-}
-
 extern "C" struct data {
 	const char *key;
 	int number;
 };
 
-#define inittable(t) aref_inittable((t), hashstr);
+#define inittable(t) aref_inittable((t), aref_hash_string);
 
 class TestTable : public ::testing::Test
 {
