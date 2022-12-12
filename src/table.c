@@ -23,6 +23,7 @@
 
 #include <table.h>
 
+#include <ctype.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -100,8 +101,21 @@ unsigned aref_djb2a(const void *data, size_t size)
 	return hash;
 }
 
-unsigned aref_hash_string(const void *p)
+inline unsigned aref_hash_string(const void *p)
 {
 	const char *mapname = p;
 	return aref_djb2a(mapname, strlen(mapname));
+}
+
+inline unsigned aref_cihash_string(const void *data)
+{
+	const unsigned char *str = data;
+	unsigned hash = 5381;
+
+	for (const unsigned char *i = str; *i; ++i) {
+		unsigned lower = tolower(*i);
+		hash = ((hash << 5) + hash) ^ lower; /* (hash * 32) ^ lower */
+	}
+
+	return hash;
 }
