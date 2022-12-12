@@ -75,7 +75,7 @@ int areflua_mappool_index(lua_State *L)
 	aref_mappool *mappool = lua_touserdata(L, 1);
 	const char *mapcode = lua_tostring(L, 2);
 
-	aref_mapdata *map = aref_findmap(mappool, mapcode);
+	aref_mapdata *map = aref_mappool_find(mappool, mapcode);
 
 	if (map == NULL) {
 		lua_pushnil(L);
@@ -108,7 +108,7 @@ int areflua_mappool_add(lua_State *L)
 	lua_getfield(L, 3, "mode");
 	uint8_t mode = (uint8_t)lua_tointeger(L, 5);
 
-	aref_mapdata *map = aref_findmap(mappool, mapcode);
+	aref_mapdata *map = aref_mappool_find(mappool, mapcode);
 	if (map == NULL) {
 		map = aref_mappool_addemptyentry(mappool);
 		strncpy(map->code, mapcode, 6);

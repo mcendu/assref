@@ -53,7 +53,7 @@ TEST(TestDecode, pool)
 	aref_initmappool(&pool);
 	aref_loadmappool(&pool, f);
 
-	aref_mapdata *data = aref_findmap(&pool, "rc4");
+	aref_mapdata *data = aref_mappool_find(&pool, "rc4");
 	ASSERT_STREQ(data->code, "rc4");
 	ASSERT_EQ(data->beatmapid, 2717089);
 

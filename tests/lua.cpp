@@ -77,7 +77,7 @@ TEST_F(TestLuaApi, mappool)
 	if (luaerror == 0) {
 		size_t top = lua_gettop(L);
 		aref_mappool *testpool = (aref_mappool *)lua_touserdata(L, top);
-		aref_mapdata *discoprince = aref_findmap(testpool, "warm1");
+		aref_mapdata *discoprince = aref_mappool_find(testpool, "warm1");
 		EXPECT_NE(discoprince, nullptr);
 		if (discoprince != nullptr) {
 			EXPECT_EQ(discoprince->mode, 0);
