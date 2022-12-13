@@ -41,7 +41,7 @@ int aref_mappool_insert(sqlite3 *db, aref_mapdata *map)
 	if (status != SQLITE_OK)
 		return status; // failure
 
-	sqlite3_bind_text(query, 1, map->code, 7, SQLITE_STATIC);
+	sqlite3_bind_text(query, 1, map->code, -1, SQLITE_STATIC);
 	sqlite3_bind_int64(query, 2, map->mode);
 	sqlite3_bind_int(query, 3, map->beatmapid);
 
@@ -63,10 +63,10 @@ int aref_mappool_find(sqlite3 *db, const char *code, aref_mapdata *data)
 	if (status != SQLITE_OK)
 		return status; // failure
 
-	sqlite3_bind_text(query, 1, code, 7, SQLITE_STATIC);
+	sqlite3_bind_text(query, 1, code, -1, SQLITE_STATIC);
 
 	status = sqlite3_step(query);
-	while (status == SQLITE_ROW) {
+	if (status == SQLITE_ROW) {
 		strcpy(data->code, (const char *)sqlite3_column_text(query, 0));
 		data->mode = sqlite3_column_int(query, 1);
 		data->beatmapid = sqlite3_column_int64(query, 2);

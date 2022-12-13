@@ -43,9 +43,9 @@ void aref_loadmappool(sqlite3 *db, FILE *f)
 	while (!feof(f)) {
 		aref_decodepoolentry(&map, f);
 
-		sqlite3_bind_text(load_query, 1, map.code, 7, SQLITE_STATIC);
-		sqlite3_bind_int64(load_query, 2, map.beatmapid);
-		sqlite3_bind_int(load_query, 3, map.mode);
+		sqlite3_bind_text(load_query, 1, map.code, -1, SQLITE_STATIC);
+		sqlite3_bind_int64(load_query, 2, map.mode);
+		sqlite3_bind_int(load_query, 3, map.beatmapid);
 		sqlite3_step(load_query);
 		sqlite3_reset(load_query);
 	}
@@ -57,6 +57,13 @@ void aref_decodepoolentry(aref_mapdata *entry, FILE *f)
 {
 	char buf[24];
 	char end;
+
+	int c = getc(f);
+
+	if (c == EOF) // ending with a newline
+		return;
+	else
+		ungetc(c, f);
 
 	// Code,BeatmapID,Mode
 	aref_readfield(entry->code, f, 7, &end);
