@@ -30,21 +30,17 @@ static int up(sqlite3 *cursor)
 		cursor,
 		u8"BEGIN TRANSACTION;"
 
-		"CREATE TABLE aref_metadata ("
-		"   key TEXT PRIMARY KEY,"
-		// rely on SQLite's dynamicness as we could
-		// store anything in our metadata table
-		"   value);"
+		u8"CREATE TABLE aref_metadata (key TEXT PRIMARY KEY, value);"
 
-		"CREATE TABLE mappool ("
-		"   mapcode CHAR(6) PRIMARY KEY,"
-		"   mode INTEGER,"
-		"   beatmapid INTEGER);"
+		u8"CREATE TABLE mappool ("
+		u8"   mapcode CHAR(6) PRIMARY KEY,"
+		u8"   mode INTEGER,"
+		u8"   beatmapid INTEGER);"
 
 		// set migration revision
-		"REPLACE INTO aref_metadata (key, value) VALUES('revision', 0);"
+		u8"REPLACE INTO aref_metadata (key, value) VALUES('revision', 0);"
 
-		"COMMIT TRANSACTION;",
+		u8"COMMIT TRANSACTION;",
 		NULL, NULL, NULL);
 }
 
@@ -52,9 +48,9 @@ static int down(sqlite3 *cursor)
 {
 	return sqlite3_exec(cursor,
 						u8"BEGIN TRANSACTION;"
-						"DROP TABLE mappool;"
-						"DROP TABLE aref_metadata;"
-						"COMMIT TRANSACTION;",
+						u8"DROP TABLE mappool;"
+						u8"DROP TABLE aref_metadata;"
+						u8"COMMIT TRANSACTION;",
 						NULL, NULL, NULL);
 }
 
