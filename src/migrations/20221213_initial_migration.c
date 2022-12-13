@@ -58,4 +58,4 @@ static int down(sqlite3 *cursor)
 						NULL, NULL, NULL);
 }
 
-extern const aref_migration aref_dbmigration_initial_migration = {up, down};
+const aref_migration aref_dbmigration_initial_migration = {up, down};

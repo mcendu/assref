@@ -24,7 +24,7 @@
 #include <migrations.h>
 #include <stdlib.h>
 
-extern const aref_migration *aref_migrations[] = {
+const aref_migration *aref_migrations[] = {
 	&aref_dbmigration_initial_migration,
 	NULL /* allows easy checking if a migration is latest */
 };
