@@ -42,7 +42,7 @@ static int up(sqlite3 *cursor)
 		"   beatmapid INTEGER);"
 
 		// set migration revision
-		"REPLACE INTO metadata (key, value) VALUES('revision', 0);"
+		"REPLACE INTO aref_metadata (key, value) VALUES('revision', 0);"
 
 		"COMMIT TRANSACTION;",
 		NULL, NULL, NULL);
