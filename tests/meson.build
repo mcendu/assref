@@ -4,7 +4,6 @@ tests_src = [
 	'decode.cpp',
 	# 'lua.cpp',
 	'mappool.cpp',
-	'table.cpp',
 ]
 
 has_cxx = add_languages('cpp', native: false, required: false)
