@@ -81,6 +81,12 @@ extern int aref_mappool_find(sqlite3 *, const char *code, aref_mapdata *data);
 /*
  * Database queries
  */
+/**
+ * @brief Add a new beatmap to the mappool.
+ * @param 1 The code name of the beatmap.
+ * @param 2 The game mode of the beatmap.
+ * @param 3 The identifier of the beatmap on osu! servers.
+ */
 extern const char *aref_mappool_insert_query;
 extern const char *aref_mappool_find_query;
 

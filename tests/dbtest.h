@@ -21,57 +21,29 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#include <decode.h>
+#ifndef _DBTEST_H
+#define _DBTEST_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <sqlite3.h>
+#include <db.h>
+#include <gtest/gtest.h>
 
-#include <csv.h>
-#include <mappool.h>
-
-void aref_loadmappool(sqlite3 *db, FILE *f)
+class TestDatabase : public ::testing::Test
 {
-	// not using aref_mappool_insert() as it
-	// recompiles our query again and again
-	sqlite3_stmt *load_query;
-	sqlite3_prepare_v2(db, aref_mappool_insert_query, -1, &load_query, NULL);
-	if (load_query == NULL) return;
+  public:
+	static sqlite3 *db;
 
-	aref_mapdata map;
-
-	while (!feof(f)) {
-		aref_decodepoolentry(&map, f);
-
-		sqlite3_bind_text(load_query, 1, map.code, 7, SQLITE_STATIC);
-		sqlite3_bind_int64(load_query, 2, map.beatmapid);
-		sqlite3_bind_int(load_query, 3, map.mode);
-		sqlite3_step(load_query);
-		sqlite3_reset(load_query);
+	static void SetUpTestSuite()
+	{
+		aref_db_open((char *)":memory:", &db);
 	}
 
-	sqlite3_finalize(load_query);
-}
+	static void TearDownTestSuite()
+	{
+		sqlite3_close(db);
+		db = 0;
+	}
+};
 
-void aref_decodepoolentry(aref_mapdata *entry, FILE *f)
-{
-	char buf[24];
-	char end;
+extern testing::AssertionResult DbAccessSuccess(int code, char *error);
 
-	// Code,BeatmapID,Mode
-	aref_readfield(entry->code, f, 7, &end);
-	if (end == EOF || end == '\n')
-		return;
-
-	aref_readfield(buf, f, 24, &end);
-	entry->beatmapid = strtoull(buf, NULL, 0);
-	if (end == EOF || end == '\n')
-		return;
-
-	aref_readfield(buf, f, 24, &end);
-	entry->mode = (uint8_t)strtol(buf, NULL, 0);
-	if (end == EOF || end == '\n')
-		return;
-
-	aref_fskipline(f);
-}
+#endif /* _DBTEST_H */

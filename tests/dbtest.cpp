@@ -26,37 +26,14 @@
 #include <db.h>
 #include <sqlite3.h>
 
-static sqlite3 *db;
+#include "dbtest.h"
 
-class TestDatabase : public ::testing::Test
-{
-  public:
-	static void SetUpTestSuite()
-	{
-		aref_db_open((char *)":memory:", &db);
-	}
+sqlite3 *TestDatabase::db = 0;
 
-	static void TearDownTestSuite()
-	{
-		sqlite3_close(db);
-	}
-};
-
-testing::AssertionResult AccessSuccess(int code, char *error)
+testing::AssertionResult DbAccessSuccess(int code, char *error)
 {
 	if (code != SQLITE_OK && code != SQLITE_ROW && code != SQLITE_DONE)
 		return testing::AssertionFailure()
 			   << "Database operation failed: " << error;
 	return testing::AssertionSuccess();
-}
-
-TEST_F(TestDatabase, write)
-{
-	ASSERT_NE(db, nullptr);
-	char *error;
-	int result = sqlite3_exec(
-		db, u8"INSERT OR ABORT INTO mappool VALUES('rc1', 3861836, 3)", 0, 0,
-		&error);
-	EXPECT_TRUE(AccessSuccess(result, error));
-	sqlite3_free(error);
 }

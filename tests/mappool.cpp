@@ -21,57 +21,26 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#include <decode.h>
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <sqlite3.h>
-
-#include <csv.h>
 #include <mappool.h>
 
-void aref_loadmappool(sqlite3 *db, FILE *f)
+#include <gtest/gtest.h>
+
+#include "dbtest.h"
+
+class TestMappool : public TestDatabase
 {
-	// not using aref_mappool_insert() as it
-	// recompiles our query again and again
-	sqlite3_stmt *load_query;
-	sqlite3_prepare_v2(db, aref_mappool_insert_query, -1, &load_query, NULL);
-	if (load_query == NULL) return;
+};
 
-	aref_mapdata map;
-
-	while (!feof(f)) {
-		aref_decodepoolentry(&map, f);
-
-		sqlite3_bind_text(load_query, 1, map.code, 7, SQLITE_STATIC);
-		sqlite3_bind_int64(load_query, 2, map.beatmapid);
-		sqlite3_bind_int(load_query, 3, map.mode);
-		sqlite3_step(load_query);
-		sqlite3_reset(load_query);
-	}
-
-	sqlite3_finalize(load_query);
-}
-
-void aref_decodepoolentry(aref_mapdata *entry, FILE *f)
+TEST_F(TestMappool, readwrite)
 {
-	char buf[24];
-	char end;
+	aref_mapdata mapdata = {.code = "rc1", .mode = 3, .beatmapid = 3861836};
+	aref_mapdata readmapdata;
 
-	// Code,BeatmapID,Mode
-	aref_readfield(entry->code, f, 7, &end);
-	if (end == EOF || end == '\n')
-		return;
+	ASSERT_NE(db, nullptr);
+	aref_mappool_insert(db, &mapdata);
+	aref_mappool_find(db, "rc1", &readmapdata);
 
-	aref_readfield(buf, f, 24, &end);
-	entry->beatmapid = strtoull(buf, NULL, 0);
-	if (end == EOF || end == '\n')
-		return;
-
-	aref_readfield(buf, f, 24, &end);
-	entry->mode = (uint8_t)strtol(buf, NULL, 0);
-	if (end == EOF || end == '\n')
-		return;
-
-	aref_fskipline(f);
+	ASSERT_STREQ(readmapdata.code, mapdata.code);
+	ASSERT_EQ(readmapdata.beatmapid, mapdata.beatmapid);
+	ASSERT_EQ(readmapdata.mode, mapdata.mode);
 }

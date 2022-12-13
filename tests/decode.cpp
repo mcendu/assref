@@ -23,11 +23,17 @@
 
 #include <decode.h>
 
-#include <mappool.h>
-
 #include <gtest/gtest.h>
 
-TEST(TestDecode, poolentry)
+#include <mappool.h>
+#include "dbtest.h"
+
+class TestDecode : public TestDatabase
+{
+
+};
+
+TEST_F(TestDecode, poolentry)
 {
 	aref_mapdata mapdata;
 	FILE *f = fopen("tests/data/poolentry.csv", "r");
@@ -45,18 +51,16 @@ TEST(TestDecode, poolentry)
 	ASSERT_STREQ(mapdata.code, "rc4");
 }
 
-TEST(TestDecode, pool)
+TEST_F(TestDecode, pool)
 {
-	aref_mappool pool;
+	ASSERT_NE(db, nullptr);
+	aref_mapdata data;
+
 	FILE *f = fopen("tests/data/pool.csv", "r");
-
-	aref_initmappool(&pool);
-	aref_loadmappool(&pool, f);
-
-	aref_mapdata *data = aref_mappool_find(&pool, "rc4");
-	ASSERT_STREQ(data->code, "rc4");
-	ASSERT_EQ(data->beatmapid, 2717089);
-
+	aref_loadmappool(db, f);
 	fclose(f);
-	aref_freemappool(&pool);
+
+	aref_mappool_find(db, "rc4", &data);
+	ASSERT_STREQ(data.code, "rc4");
+	ASSERT_EQ(data.beatmapid, 2717089);
 }
