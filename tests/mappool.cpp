@@ -40,7 +40,7 @@ TEST_F(TestMappool, readwrite)
 	aref_mappool_insert(db, &mapdata);
 	aref_mappool_find(db, "rc1", &readmapdata);
 
-	ASSERT_STREQ(readmapdata.code, mapdata.code);
-	ASSERT_EQ(readmapdata.beatmapid, mapdata.beatmapid);
-	ASSERT_EQ(readmapdata.mode, mapdata.mode);
+	EXPECT_STREQ(readmapdata.code, mapdata.code);
+	EXPECT_EQ(readmapdata.beatmapid, mapdata.beatmapid);
+	EXPECT_EQ(readmapdata.mode, mapdata.mode);
 }
