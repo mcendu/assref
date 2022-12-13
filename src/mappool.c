@@ -23,9 +23,9 @@
 
 #include <mappool.h>
 
+#include <sqlite3.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sqlite3.h>
 
 #define ALLOCATION_UNIT 32
 
@@ -42,8 +42,8 @@ int aref_mappool_insert(sqlite3 *db, aref_mapdata *map)
 		return status; // failure
 
 	sqlite3_bind_text(query, 1, map->code, 7, SQLITE_STATIC);
-	sqlite3_bind_int64(query, 2, map->beatmapid);
-	sqlite3_bind_int(query, 3, map->mode);
+	sqlite3_bind_int64(query, 2, map->mode);
+	sqlite3_bind_int(query, 3, map->beatmapid);
 
 	while ((status = sqlite3_step(query)) == SQLITE_ROW)
 		;
@@ -59,20 +59,19 @@ const char *aref_mappool_find_query = find_query;
 int aref_mappool_find(sqlite3 *db, const char *code, aref_mapdata *data)
 {
 	sqlite3_stmt *query;
-	int status = sqlite3_prepare_v2(db, insertion_query, -1, &query, NULL);
+	int status = sqlite3_prepare_v2(db, find_query, -1, &query, NULL);
 	if (status != SQLITE_OK)
 		return status; // failure
 
 	sqlite3_bind_text(query, 1, code, 7, SQLITE_STATIC);
 
 	status = sqlite3_step(query);
-	if (status != SQLITE_ROW)
-		goto done;
-	strcpy(data->code, (const char *)sqlite3_column_text(query, 0));
-	data->mode = sqlite3_column_int(query, 1);
-	data->beatmapid = sqlite3_column_int64(query, 2);
+	while (status == SQLITE_ROW) {
+		strcpy(data->code, (const char *)sqlite3_column_text(query, 0));
+		data->mode = sqlite3_column_int(query, 1);
+		data->beatmapid = sqlite3_column_int64(query, 2);
+	}
 
-done:
 	sqlite3_finalize(query);
 	return status == SQLITE_DONE ? 0 : status;
 }
