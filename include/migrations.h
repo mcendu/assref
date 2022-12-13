@@ -39,7 +39,7 @@ extern const aref_migration aref_dbmigration_initial_migration;
 
 extern const aref_migration *aref_migrations[];
 
-extern int aref_initialize_database(sqlite3 *db);
+extern int aref_db_init(sqlite3 *db);
 
 #ifdef __cplusplus
 }
