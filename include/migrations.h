@@ -31,13 +31,15 @@ extern "C" {
 #include <sqlite3.h>
 
 typedef struct aref_migration {
-	int (*up)(sqlite3 *cursor);
-	int (*down)(sqlite3 *cursor);
+	int (*up)(sqlite3 *db);
+	int (*down)(sqlite3 *db);
 } aref_migration;
 
 extern const aref_migration aref_dbmigration_initial_migration;
 
 extern const aref_migration *aref_migrations[];
+
+extern int aref_initialize_database(sqlite3 *db);
 
 #ifdef __cplusplus
 }
