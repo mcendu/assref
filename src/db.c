@@ -44,7 +44,7 @@ int aref_db_migrate(sqlite3 *cursor)
 	// check existence of data
 	sqlite3_stmt *checkdb;
 	sqlite3_prepare_v2(cursor, u8"SELECT name FROM sqlite_master;", -1,
-					   checkdb, NULL);
+					   &checkdb, NULL);
 	if (sqlite3_step(checkdb) == SQLITE_ROW) { // exists
 		hasdata = 1;
 	}
@@ -56,7 +56,7 @@ int aref_db_migrate(sqlite3 *cursor)
 		sqlite3_prepare_v2(cursor,
 						   u8"SELECT value FROM aref_metadata"
 						   u8" WHERE key='revision'",
-						   -1, getrev, NULL);
+						   -1, &getrev, NULL);
 		if ((resultcode = sqlite3_step(getrev)) == SQLITE_ROW) {
 			dbrev = sqlite3_column_int(getrev, 0);
 
