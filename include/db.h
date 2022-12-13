@@ -21,30 +21,29 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#include <migrations.h>
-#include <stdlib.h>
+#ifndef _AREF__DB_H
+#define _AREF__DB_H
 
-const char current_schema[]
-	= (u8"BEGIN TRANSACTION;"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-	   u8"CREATE TABLE aref_metadata (key TEXT PRIMARY KEY, value);"
+#include <sqlite3.h>
 
-	   u8"CREATE TABLE mappool ("
-	   u8"mapcode CHAR(6) PRIMARY KEY,"
-	   u8"mode INTEGER,"
-	   u8"beatmapid INTEGER);"
+/**
+ * @brief Open or create a database for the tournament.
+ *
+ * @param filename The filename of the database to open or create.
+ *      See <https://www.sqlite.org/c3ref/open.html> for more details.
+ * @param cursor A handle to the database is returned here.
+ * @return See <https://www.sqlite.org/rescode.html>.
+ */
+extern int aref_db_open(char *filename, sqlite3 **cursor);
 
-	   // set migration revision
-	   u8"REPLACE INTO aref_metadata (key, value) VALUES('revision', 0);"
+extern int aref_db_migrate(sqlite3 *cursor);
 
-	   u8"COMMIT TRANSACTION;");
-
-const aref_migration *aref_migrations[] = {
-	&aref_dbmigration_initial_migration,
-	NULL /* allows easy checking if a migration is latest */
-};
-
-int aref_db_init(sqlite3 *db)
-{
-	return sqlite3_exec(db, current_schema, NULL, NULL, NULL);
+#ifdef __cplusplus
 }
+#endif
+
+#endif /* !_AREF__DB_H */

@@ -21,30 +21,56 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+#include <db.h>
+
 #include <migrations.h>
 #include <stdlib.h>
 
-const char current_schema[]
-	= (u8"BEGIN TRANSACTION;"
-
-	   u8"CREATE TABLE aref_metadata (key TEXT PRIMARY KEY, value);"
-
-	   u8"CREATE TABLE mappool ("
-	   u8"mapcode CHAR(6) PRIMARY KEY,"
-	   u8"mode INTEGER,"
-	   u8"beatmapid INTEGER);"
-
-	   // set migration revision
-	   u8"REPLACE INTO aref_metadata (key, value) VALUES('revision', 0);"
-
-	   u8"COMMIT TRANSACTION;");
-
-const aref_migration *aref_migrations[] = {
-	&aref_dbmigration_initial_migration,
-	NULL /* allows easy checking if a migration is latest */
-};
-
-int aref_db_init(sqlite3 *db)
+int aref_db_open(char *filename, sqlite3 **cursor)
 {
-	return sqlite3_exec(db, current_schema, NULL, NULL, NULL);
+	int status = sqlite3_open_v2(
+		filename, cursor, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL);
+	if (status != SQLITE_OK)
+		return status;
+
+	return aref_db_migrate(*cursor);
+}
+
+int aref_db_migrate(sqlite3 *cursor)
+{
+	int hasdata = 0;
+	int dbrev;
+
+	// check existence of data
+	sqlite3_stmt *checkdb;
+	sqlite3_prepare_v2(cursor, u8"SELECT name FROM sqlite_master;", -1,
+					   checkdb, NULL);
+	if (sqlite3_step(checkdb) == SQLITE_ROW) { // exists
+		hasdata = 1;
+	}
+	sqlite3_finalize(checkdb);
+
+	if (hasdata) {
+		sqlite3_stmt *getrev;
+		int resultcode;
+		sqlite3_prepare_v2(cursor,
+						   u8"SELECT value FROM aref_metadata"
+						   u8" WHERE key='revision'",
+						   -1, getrev, NULL);
+		if ((resultcode = sqlite3_step(getrev)) == SQLITE_ROW) {
+			dbrev = sqlite3_column_int(getrev, 0);
+
+			for (int i = dbrev + 1; aref_migrations[i] != NULL; ++i) {
+				int result = aref_migrations[i]->up(cursor);
+				if (result != SQLITE_OK) return result;
+			}
+			return SQLITE_OK;
+		} else {
+			// likely not our database, leave it here
+			sqlite3_finalize(getrev);
+			return resultcode;
+		}
+	} else {
+		return aref_db_init(cursor);
+	}
 }
