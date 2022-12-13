@@ -34,7 +34,7 @@ static int up(sqlite3 *cursor)
 		"   key TEXT PRIMARY KEY,"
 		// rely on SQLite's dynamicness as we could
 		// store anything in our metadata table
-		"   value BLOB);"
+		"   value);"
 
 		"CREATE TABLE mappool ("
 		"   mapcode CHAR(6) PRIMARY KEY,"
