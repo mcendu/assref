@@ -30,6 +30,17 @@
 
 sqlite3 *TestDatabase::db = 0;
 
+void TestDatabase::SetUpTestSuite()
+{
+	aref_db_open((char *)"test.db", &db);
+}
+
+void TestDatabase::TearDownTestSuite()
+{
+	sqlite3_close(db);
+	unlink("test.db");
+}
+
 testing::AssertionResult DbAccessSuccess(int code, char *error)
 {
 	if (code != SQLITE_OK && code != SQLITE_ROW && code != SQLITE_DONE)

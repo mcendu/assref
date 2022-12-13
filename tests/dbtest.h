@@ -32,16 +32,9 @@ class TestDatabase : public ::testing::Test
   public:
 	static sqlite3 *db;
 
-	static void SetUpTestSuite()
-	{
-		aref_db_open((char *)":memory:", &db);
-	}
+	static void SetUpTestSuite();
 
-	static void TearDownTestSuite()
-	{
-		sqlite3_close(db);
-		db = 0;
-	}
+	static void TearDownTestSuite();
 };
 
 extern testing::AssertionResult DbAccessSuccess(int code, char *error);
