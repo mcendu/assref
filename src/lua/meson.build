@@ -1,5 +1,5 @@
 src_lua = [
-	'mappool.c',
+	# 'mappool.c',
 ]
 
 foreach item : src_lua

@@ -29,9 +29,9 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include <table.h>
+#include <sqlite3.h>
 
-typedef struct {
+typedef struct aref_mapdata {
 	/**
 	 * @brief A codename used to identify the beatmap.
 	 */
@@ -53,22 +53,36 @@ enum aref_mode {
 	AREF_MODE_MANIA
 };
 
-typedef struct {
-	aref_mapdata *pool;
-	size_t size;
-	size_t capacity;
-	aref_table table;
-} aref_mappool;
+/**
+ * @deprecated
+ */
+typedef sqlite3 aref_mappool;
 
-extern void aref_initmappool(aref_mappool *mappool);
-extern void aref_freemappool(aref_mappool *mappool);
+/*
+ * Methods
+ */
 
-extern aref_mapdata *aref_mappool_addemptyentry(aref_mappool *mappool);
+/**
+ * @brief Add a new beatmap to the mappool.
+ *
+ * @param data The beatmap to insert.
+ * @return If 0, indicates success; any other number indicates failure.
+ */
+extern int aref_mappool_insert(sqlite3 *, aref_mapdata *data);
+/**
+ * @brief Look up a beatmap by its code name.
+ *
+ * @param code The code name of a beatmap.
+ * @param data A pointer to which beatmap data found is written.
+ * @return If 0, indicates success; any other number indicates failure.
+ */
+extern int aref_mappool_find(sqlite3 *, const char *code, aref_mapdata *data);
 
-#define aref_mappool_insert(mappool, data) \
-	aref_table_insert(&(mappool)->table, (void *)data->code, (void *)data)
-#define aref_mappool_find(mappool, code) \
-	(aref_mapdata *)aref_table_find(&(mappool)->table, (void *)(code))
+/*
+ * Database queries
+ */
+extern const char *aref_mappool_insert_query;
+extern const char *aref_mappool_find_query;
 
 #ifdef __cplusplus
 }
