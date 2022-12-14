@@ -33,7 +33,7 @@ class TestMappool : public TestDatabase
 
 TEST_F(TestMappool, readwrite)
 {
-	aref_mapdata mapdata = {.code = "rc1", .mode = 3, .beatmapid = 3861836};
+	aref_mapdata mapdata = {"rc1", 3, 3861836};
 	aref_mapdata readmapdata;
 
 	ASSERT_NE(db, nullptr);
@@ -43,4 +43,16 @@ TEST_F(TestMappool, readwrite)
 	EXPECT_STREQ(readmapdata.code, mapdata.code);
 	EXPECT_EQ(readmapdata.beatmapid, mapdata.beatmapid);
 	EXPECT_EQ(readmapdata.mode, mapdata.mode);
+}
+
+TEST_F(TestMappool, inject)
+{
+	aref_mapdata mapdata = {"'); --", 3, 3861836};
+	aref_mapdata readmapdata = {"", 0, 0};
+
+	ASSERT_NE(db, nullptr);
+	aref_mappool_insert(db, &mapdata);
+	aref_mappool_find(db, "'); --", &readmapdata);
+
+	EXPECT_STREQ(readmapdata.code, mapdata.code);
 }
