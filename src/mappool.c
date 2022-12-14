@@ -69,5 +69,5 @@ int aref_mappool_find(sqlite3 *db, const char *code, aref_mapdata *data)
 	}
 
 	sqlite3_finalize(query);
-	return status == SQLITE_DONE ? 0 : status;
+	return !(status == SQLITE_ROW);
 }
