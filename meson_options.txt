@@ -1,2 +1,2 @@
-option('shared_sqlite', type: 'boolean', value: true,
-	description: 'Whether to dynamically link to SQLite')
+option('static_sqlite', type: 'boolean', value: false,
+	description: 'Links against a static SQLite')
