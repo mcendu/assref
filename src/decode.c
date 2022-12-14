@@ -30,8 +30,9 @@
 #include <csv.h>
 #include <mappool.h>
 
-void aref_loadmappool(sqlite3 *db, FILE *f)
+int aref_loadmappool(sqlite3 *db, FILE *f)
 {
+	int rowcount = 0;
 	// not using aref_mappool_insert() as it
 	// recompiles our query again and again
 	sqlite3_exec(db, "BEGIN TRANSACTION;", NULL, NULL, NULL);
@@ -39,7 +40,7 @@ void aref_loadmappool(sqlite3 *db, FILE *f)
 	sqlite3_exec(db, "DELETE FROM mappool;", NULL, NULL, NULL);
 	sqlite3_stmt *load_query;
 	sqlite3_prepare_v2(db, aref_mappool_insert_query, -1, &load_query, NULL);
-	if (load_query == NULL) return;
+	if (load_query == NULL) return 0;
 
 	aref_mapdata map;
 
@@ -50,11 +51,13 @@ void aref_loadmappool(sqlite3 *db, FILE *f)
 		sqlite3_bind_int64(load_query, 2, map.mode);
 		sqlite3_bind_int(load_query, 3, map.beatmapid);
 		sqlite3_step(load_query);
+		rowcount += 1;
 		sqlite3_reset(load_query);
 	}
 
 	sqlite3_finalize(load_query);
 	sqlite3_exec(db, "COMMIT TRANSACTION;", NULL, NULL, NULL);
+	return rowcount;
 }
 
 void aref_decodepoolentry(aref_mapdata *entry, FILE *f)

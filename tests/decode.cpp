@@ -57,10 +57,10 @@ TEST_F(TestDecode, pool)
 	aref_mapdata data;
 
 	FILE *f = fopen("tests/data/pool.csv", "r");
-	aref_loadmappool(db, f);
+	EXPECT_EQ(aref_loadmappool(db, f), 11);
 	fclose(f);
 
 	aref_mappool_find(db, "rc4", &data);
-	ASSERT_STREQ(data.code, "rc4");
-	ASSERT_EQ(data.beatmapid, 2717089);
+	EXPECT_STREQ(data.code, "rc4");
+	EXPECT_EQ(data.beatmapid, 2717089);
 }

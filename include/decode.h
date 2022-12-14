@@ -29,6 +29,7 @@ extern "C" {
 #endif
 
 #include <mappool.h>
+#include <sqlite3.h>
 #include <stdio.h>
 
 /**
@@ -39,7 +40,12 @@ extern "C" {
  */
 extern void aref_decodepoolentry(aref_mapdata *entry, FILE *file);
 
-extern void aref_loadmappool(aref_mappool *mappool, FILE *file);
+/**
+ * @brief Loads a mappool from CSV into the database.
+ * @param file The file to read data from.
+ * @return The number of entries read.
+ */
+extern int aref_loadmappool(sqlite3 *, FILE *file);
 
 #ifdef __cplusplus
 }
