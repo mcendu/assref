@@ -7,7 +7,7 @@ src = [
 
 
 hexchat_dep = dependency('hexchat-plugin', required: false)
-sqlite3_dep = dependency('sqlite3')
+sqlite3_dep = dependency('sqlite3', shared = get_option('shared_sqlite'))
 
 lib_deps = [sqlite3_dep]
 
@@ -21,7 +21,7 @@ endif
 lib = shared_library('assref', src,
 	include_directories: inc,
 	install: true,
-	install_dir: get_option('libdir') / 'lua',
+	install_dir: get_option('libdir'),
 	dependencies: lib_deps)
 dep = declare_dependency(
 	link_with: lib,

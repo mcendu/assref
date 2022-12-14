@@ -26,9 +26,9 @@ jobs:
         sudo apt-get update
         sudo apt-get install \
           meson \
-          liblua5.3-dev \
+          libgtest-dev \
+          hexchat-dev \
           libsqlite3-dev \
-          libgtest-dev
 
     - name: Configure project
       run: |
@@ -81,9 +81,9 @@ jobs:
           gcc:p
           pkgconf:p
           meson:p
-          luajit:p
-          sqlite3:p
           gtest:p
+          hexchat:p
+          sqlite3:p
     - uses: actions/checkout@v3
 
     - name: Configure project
@@ -92,7 +92,7 @@ jobs:
           --backend ninja \
           --buildtype ${{ matrix.buildtype }} \
           --prefix="${{ env.prefix }}" \
-          -Dlua=luajit \
+          -Dshared_sqlite=false \
           builddir
 
     - name: Build
