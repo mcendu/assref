@@ -65,7 +65,7 @@ extern int aref_mappool_insert(sqlite3 *, aref_mapdata *data);
  *
  * @param code The code name of a beatmap.
  * @param data A pointer to which beatmap data found is written.
- * @return If 0, indicates success; any other number indicates failure.
+ * @return If 0, indicates that a map has been found.
  */
 extern int aref_mappool_find(sqlite3 *, const char *code, aref_mapdata *data);
 
