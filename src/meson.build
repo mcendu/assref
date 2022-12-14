@@ -6,18 +6,12 @@ src = [
 ]
 
 
-lua_dep = dependency(get_option('lua'), required: false)
 hexchat_dep = dependency('hexchat-plugin', required: false)
 sqlite3_dep = dependency('sqlite3')
 
 lib_deps = [sqlite3_dep]
 
 subdir('migrations')
-
-if lua_dep.found()
-	lib_deps += lua_dep
-	subdir('lua')
-endif
 
 if hexchat_dep.found()
 	lib_deps += hexchat_dep
