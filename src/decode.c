@@ -34,6 +34,9 @@ void aref_loadmappool(sqlite3 *db, FILE *f)
 {
 	// not using aref_mappool_insert() as it
 	// recompiles our query again and again
+	sqlite3_exec(db, "BEGIN TRANSACTION;", NULL, NULL, NULL);
+	// clean start
+	sqlite3_exec(db, "DELETE FROM mappool;", NULL, NULL, NULL);
 	sqlite3_stmt *load_query;
 	sqlite3_prepare_v2(db, aref_mappool_insert_query, -1, &load_query, NULL);
 	if (load_query == NULL) return;
@@ -51,6 +54,7 @@ void aref_loadmappool(sqlite3 *db, FILE *f)
 	}
 
 	sqlite3_finalize(load_query);
+	sqlite3_exec(db, "COMMIT TRANSACTION;", NULL, NULL, NULL);
 }
 
 void aref_decodepoolentry(aref_mapdata *entry, FILE *f)
