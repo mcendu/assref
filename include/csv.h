@@ -68,6 +68,13 @@ extern size_t aref_sreadfield(char *buffer, const char *string, size_t size, cha
  */
 extern size_t aref_fskipline(FILE *file);
 
+/**
+ * @brief Check if no more data is available.
+ *
+ * @param file The file to check.
+ */
+extern int aref_eof(FILE *file);
+
 #ifdef __cplusplus
 }
 #endif
