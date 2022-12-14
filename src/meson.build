@@ -3,7 +3,6 @@ src = [
 	'db.c',
 	'decode.c',
 	'mappool.c',
-	'table.c',
 ]
 
 
