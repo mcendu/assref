@@ -21,61 +21,30 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#include <table.h>
+#include <migrations.h>
+#include <stdlib.h>
 
-#include <string.h>
+const char current_schema[]
+	= (u8"BEGIN TRANSACTION;"
 
-#include <gtest/gtest.h>
+	   u8"CREATE TABLE aref_metadata (key TEXT PRIMARY KEY, value);"
 
-extern "C" struct data {
-	const char *key;
-	int number;
+	   u8"CREATE TABLE mappool ("
+	   u8"mapcode CHAR(6) PRIMARY KEY,"
+	   u8"mode INTEGER,"
+	   u8"beatmapid INTEGER);"
+
+	   // set migration revision
+	   u8"REPLACE INTO aref_metadata (key, value) VALUES('revision', 0);"
+
+	   u8"COMMIT TRANSACTION;");
+
+const aref_migration *aref_migrations[] = {
+	&aref_dbmigration_initial_migration,
+	NULL /* allows easy checking if a migration is latest */
 };
 
-#define inittable(t) aref_inittable((t), aref_hash_string);
-
-class TestTable : public ::testing::Test
+int aref_db_init(sqlite3 *db)
 {
-  protected:
-	aref_table t;
-	void SetUp() override
-	{
-		inittable(&t);
-	}
-
-	void TearDown() override
-	{
-		aref_freetable(&t);
-	}
-};
-
-const struct data dataset[]
-	= {{(const char *)"Alice", 172}, {(const char *)"Bob", 175}};
-
-using DeathTestTable = TestTable;
-
-TEST_F(TestTable, basic)
-{
-	// note that C++ is stricter about pointers than C, hence the
-	// load of pointer conversions
-	aref_table_insert(&t, (void *)"Alice", (void *)&(dataset[0]));
-	aref_table_insert(&t, (void *)"Bob", (void *)&(dataset[1]));
-
-	struct data *alice = (data *)aref_table_find(&t, (void *)"Alice");
-	EXPECT_STREQ(alice->key, "Alice");
-	EXPECT_EQ(alice->number, 172);
-
-	EXPECT_EQ(aref_table_find(&t, (void *)"Carol"), nullptr);
-}
-
-TEST_F(TestTable, free)
-{
-	aref_freetable(&t);
-	EXPECT_EQ(t.pool, nullptr);
-}
-
-TEST_F(TestTable, cihash)
-{
-	EXPECT_EQ(aref_cihash_string("Hello world"),
-			  aref_cihash_string("hELLO WORLD"));
+	return sqlite3_exec(db, current_schema, NULL, NULL, NULL);
 }

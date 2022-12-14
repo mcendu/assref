@@ -25,15 +25,39 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <csv.h>
+#include <sqlite3.h>
 
-void aref_loadmappool(aref_mappool *pool, FILE *f)
+#include <csv.h>
+#include <mappool.h>
+
+int aref_loadmappool(sqlite3 *db, FILE *f)
 {
-	while (!feof(f)) {
-		aref_mapdata *data = aref_mappool_addemptyentry(pool);
-		aref_decodepoolentry(data, f);
-		aref_mappool_insert(pool, data);
+	int rowcount = 0;
+	sqlite3_exec(db, "BEGIN TRANSACTION;", NULL, NULL, NULL);
+	// clean start
+	sqlite3_exec(db, "DELETE FROM mappool;", NULL, NULL, NULL);
+	// not using aref_mappool_insert() as it
+	// recompiles our query again and again
+	sqlite3_stmt *load_query;
+	sqlite3_prepare_v2(db, aref_mappool_insert_query, -1, &load_query, NULL);
+	if (load_query == NULL) return 0;
+
+	aref_mapdata map;
+
+	while (!aref_eof(f)) {
+		aref_decodepoolentry(&map, f);
+
+		sqlite3_bind_text(load_query, 1, map.code, -1, SQLITE_STATIC);
+		sqlite3_bind_int64(load_query, 2, map.mode);
+		sqlite3_bind_int(load_query, 3, map.beatmapid);
+		sqlite3_step(load_query);
+		rowcount += 1;
+		sqlite3_reset(load_query);
 	}
+
+	sqlite3_finalize(load_query);
+	sqlite3_exec(db, "COMMIT TRANSACTION;", NULL, NULL, NULL);
+	return rowcount;
 }
 
 void aref_decodepoolentry(aref_mapdata *entry, FILE *f)

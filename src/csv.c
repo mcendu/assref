@@ -121,3 +121,12 @@ size_t aref_fskipline(FILE *f)
 		++result;
 	return result + 1;
 }
+
+int aref_eof(FILE *f)
+{
+	int c = getc(f);
+	if (c == EOF)
+		return 1;
+	ungetc(c, f);
+	return 0;
+}

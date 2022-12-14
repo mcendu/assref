@@ -21,46 +21,38 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#include <decode.h>
+#include <mappool.h>
 
 #include <gtest/gtest.h>
 
-#include <mappool.h>
 #include "dbtest.h"
 
-class TestDecode : public TestDatabase
+class TestMappool : public TestDatabase
 {
-
 };
 
-TEST_F(TestDecode, poolentry)
+TEST_F(TestMappool, readwrite)
 {
-	aref_mapdata mapdata;
-	FILE *f = fopen("tests/data/poolentry.csv", "r");
+	aref_mapdata mapdata = {"rc1", 3, 3861836};
+	aref_mapdata readmapdata;
 
-	aref_decodepoolentry(&mapdata, f);
-	ASSERT_STREQ(mapdata.code, "rc1");
-	ASSERT_EQ(mapdata.beatmapid, 3861836);
-	ASSERT_EQ(mapdata.mode, 3);
-	aref_decodepoolentry(&mapdata, f);
-	ASSERT_STREQ(mapdata.code, "rc2");
-	ASSERT_EQ(mapdata.beatmapid, 3573500);
-	aref_decodepoolentry(&mapdata, f);
-	ASSERT_STREQ(mapdata.code, "rc3");
-	aref_decodepoolentry(&mapdata, f);
-	ASSERT_STREQ(mapdata.code, "rc4");
+	ASSERT_NE(db, nullptr);
+	aref_mappool_insert(db, &mapdata);
+	aref_mappool_find(db, "rc1", &readmapdata);
+
+	EXPECT_STREQ(readmapdata.code, mapdata.code);
+	EXPECT_EQ(readmapdata.beatmapid, mapdata.beatmapid);
+	EXPECT_EQ(readmapdata.mode, mapdata.mode);
 }
 
-TEST_F(TestDecode, pool)
+TEST_F(TestMappool, inject)
 {
+	aref_mapdata mapdata = {"'); --", 3, 3861836};
+	aref_mapdata readmapdata = {"", 0, 0};
+
 	ASSERT_NE(db, nullptr);
-	aref_mapdata data;
+	aref_mappool_insert(db, &mapdata);
+	aref_mappool_find(db, "'); --", &readmapdata);
 
-	FILE *f = fopen("tests/data/pool.csv", "r");
-	EXPECT_EQ(aref_loadmappool(db, f), 11);
-	fclose(f);
-
-	aref_mappool_find(db, "rc4", &data);
-	EXPECT_STREQ(data.code, "rc4");
-	EXPECT_EQ(data.beatmapid, 2717089);
+	EXPECT_STREQ(readmapdata.code, mapdata.code);
 }

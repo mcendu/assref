@@ -1,4 +1,4 @@
-name: Meson
+name: Build
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
 
 jobs:
   build_linux:
-    name: build (Ubuntu)
+    name: Ubuntu
     strategy:
       matrix:
         buildtype: ["debug", "release"]
@@ -27,6 +27,7 @@ jobs:
         sudo apt-get install \
           meson \
           liblua5.3-dev \
+          libsqlite3-dev \
           libgtest-dev
 
     - name: Configure project
@@ -58,7 +59,7 @@ jobs:
         path: builddir/${{ env.packagename }}.tar.xz
 
   build-windows:
-    name: build (Windows x64)
+    name: Windows x64
     strategy:
       matrix:
         buildtype: ["debug", "release"]
@@ -81,6 +82,7 @@ jobs:
           pkgconf:p
           meson:p
           luajit:p
+          sqlite3:p
           gtest:p
     - uses: actions/checkout@v3
 

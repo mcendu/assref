@@ -21,46 +21,29 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#include <decode.h>
+#ifndef _AREF__DB_H
+#define _AREF__DB_H
 
-#include <gtest/gtest.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#include <mappool.h>
-#include "dbtest.h"
+#include <sqlite3.h>
 
-class TestDecode : public TestDatabase
-{
+/**
+ * @brief Open or create a database for the tournament.
+ *
+ * @param filename The filename of the database to open or create.
+ *      See <https://www.sqlite.org/c3ref/open.html> for more details.
+ * @param cursor A handle to the database is returned here.
+ * @return See <https://www.sqlite.org/rescode.html>.
+ */
+extern int aref_db_open(char *filename, sqlite3 **cursor);
 
-};
+extern int aref_db_migrate(sqlite3 *cursor);
 
-TEST_F(TestDecode, poolentry)
-{
-	aref_mapdata mapdata;
-	FILE *f = fopen("tests/data/poolentry.csv", "r");
-
-	aref_decodepoolentry(&mapdata, f);
-	ASSERT_STREQ(mapdata.code, "rc1");
-	ASSERT_EQ(mapdata.beatmapid, 3861836);
-	ASSERT_EQ(mapdata.mode, 3);
-	aref_decodepoolentry(&mapdata, f);
-	ASSERT_STREQ(mapdata.code, "rc2");
-	ASSERT_EQ(mapdata.beatmapid, 3573500);
-	aref_decodepoolentry(&mapdata, f);
-	ASSERT_STREQ(mapdata.code, "rc3");
-	aref_decodepoolentry(&mapdata, f);
-	ASSERT_STREQ(mapdata.code, "rc4");
+#ifdef __cplusplus
 }
+#endif
 
-TEST_F(TestDecode, pool)
-{
-	ASSERT_NE(db, nullptr);
-	aref_mapdata data;
-
-	FILE *f = fopen("tests/data/pool.csv", "r");
-	EXPECT_EQ(aref_loadmappool(db, f), 11);
-	fclose(f);
-
-	aref_mappool_find(db, "rc4", &data);
-	EXPECT_STREQ(data.code, "rc4");
-	EXPECT_EQ(data.beatmapid, 2717089);
-}
+#endif /* !_AREF__DB_H */

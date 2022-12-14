@@ -23,35 +23,55 @@
 
 #include <mappool.h>
 
+#include <sqlite3.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include <table.h>
-
 #define ALLOCATION_UNIT 32
 
-void aref_initmappool(aref_mappool *mappool)
+static const char insertion_query[]
+	= u8"REPLACE INTO mappool (mapcode,mode,beatmapid) "
+	  u8"VALUES(:code,:mode,:beatmapid);";
+const char *aref_mappool_insert_query = insertion_query;
+
+int aref_mappool_insert(sqlite3 *db, aref_mapdata *map)
 {
-	mappool->pool = malloc(ALLOCATION_UNIT * sizeof(aref_mapdata));
-	mappool->size = 0;
-	mappool->capacity = ALLOCATION_UNIT;
-	aref_inittable(&mappool->table, aref_cihash_string);
+	sqlite3_stmt *query;
+	int status = sqlite3_prepare_v2(db, insertion_query, -1, &query, NULL);
+	if (status != SQLITE_OK)
+		return status; // failure
+
+	sqlite3_bind_text(query, 1, map->code, -1, SQLITE_STATIC);
+	sqlite3_bind_int64(query, 2, map->mode);
+	sqlite3_bind_int(query, 3, map->beatmapid);
+
+	while ((status = sqlite3_step(query)) == SQLITE_ROW)
+		;
+
+	sqlite3_finalize(query);
+	return status == SQLITE_DONE ? 0 : status;
 }
 
-void aref_freemappool(aref_mappool *mappool)
-{
-	aref_freetable(&mappool->table);
-	free(mappool->pool);
-	mappool->pool = NULL;
-}
+const char find_query[]
+	= u8"SELECT mapcode,mode,beatmapid FROM mappool WHERE mapcode=?";
+const char *aref_mappool_find_query = find_query;
 
-aref_mapdata *aref_mappool_addemptyentry(aref_mappool *mappool)
+int aref_mappool_find(sqlite3 *db, const char *code, aref_mapdata *data)
 {
-	mappool->size += 1;
-	if (mappool->size > mappool->capacity) {
-		mappool->capacity += ALLOCATION_UNIT;
-		mappool->pool = realloc(mappool->pool, mappool->capacity * sizeof(aref_mapdata));
+	sqlite3_stmt *query;
+	int status = sqlite3_prepare_v2(db, find_query, -1, &query, NULL);
+	if (status != SQLITE_OK)
+		return status; // failure
+
+	sqlite3_bind_text(query, 1, code, -1, SQLITE_STATIC);
+
+	status = sqlite3_step(query);
+	if (status == SQLITE_ROW) {
+		strcpy(data->code, (const char *)sqlite3_column_text(query, 0));
+		data->mode = sqlite3_column_int(query, 1);
+		data->beatmapid = sqlite3_column_int64(query, 2);
 	}
 
-	return mappool->pool + mappool->size - 1;
+	sqlite3_finalize(query);
+	return status == SQLITE_DONE ? 0 : status;
 }

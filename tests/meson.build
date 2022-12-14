@@ -1,3 +1,10 @@
+tests_src = [
+	'csv.cpp',
+	'dbtest.cpp',
+	'decode.cpp',
+	'mappool.cpp',
+]
+
 has_cxx = add_languages('cpp', native: false, required: false)
 gtest_dep = dependency('gtest', main: true, required: false)
 
@@ -6,15 +13,8 @@ if not (has_cxx and gtest_dep.found())
 	subdir_done()
 endif
 
-tests_src = [
-	'csv.cpp',
-	'decode.cpp',
-	'lua.cpp',
-	'table.cpp',
-]
-
 tests = executable('testassref', tests_src,
-	dependencies: [dep, lua_dep, gtest_dep],
+	dependencies: [dep, gtest_dep],
 	install: false)
 
 subdir('data')

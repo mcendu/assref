@@ -21,46 +21,30 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#include <decode.h>
-
 #include <gtest/gtest.h>
 
-#include <mappool.h>
+#include <db.h>
+#include <sqlite3.h>
+
 #include "dbtest.h"
 
-class TestDecode : public TestDatabase
+sqlite3 *TestDatabase::db = 0;
+
+void TestDatabase::SetUpTestSuite()
 {
-
-};
-
-TEST_F(TestDecode, poolentry)
-{
-	aref_mapdata mapdata;
-	FILE *f = fopen("tests/data/poolentry.csv", "r");
-
-	aref_decodepoolentry(&mapdata, f);
-	ASSERT_STREQ(mapdata.code, "rc1");
-	ASSERT_EQ(mapdata.beatmapid, 3861836);
-	ASSERT_EQ(mapdata.mode, 3);
-	aref_decodepoolentry(&mapdata, f);
-	ASSERT_STREQ(mapdata.code, "rc2");
-	ASSERT_EQ(mapdata.beatmapid, 3573500);
-	aref_decodepoolentry(&mapdata, f);
-	ASSERT_STREQ(mapdata.code, "rc3");
-	aref_decodepoolentry(&mapdata, f);
-	ASSERT_STREQ(mapdata.code, "rc4");
+	aref_db_open((char *)"test.db", &db);
 }
 
-TEST_F(TestDecode, pool)
+void TestDatabase::TearDownTestSuite()
 {
-	ASSERT_NE(db, nullptr);
-	aref_mapdata data;
+	sqlite3_close(db);
+	unlink("test.db");
+}
 
-	FILE *f = fopen("tests/data/pool.csv", "r");
-	EXPECT_EQ(aref_loadmappool(db, f), 11);
-	fclose(f);
-
-	aref_mappool_find(db, "rc4", &data);
-	EXPECT_STREQ(data.code, "rc4");
-	EXPECT_EQ(data.beatmapid, 2717089);
+testing::AssertionResult DbAccessSuccess(int code, char *error)
+{
+	if (code != SQLITE_OK && code != SQLITE_ROW && code != SQLITE_DONE)
+		return testing::AssertionFailure()
+			   << "Database operation failed: " << error;
+	return testing::AssertionSuccess();
 }

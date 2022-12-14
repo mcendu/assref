@@ -21,19 +21,28 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef _AREF__LUAAPI_H
-#define _AREF__LUAAPI_H
+#ifndef _AREF__MIGRATIONS_H
+#define _AREF__MIGRATIONS_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <lua.h>
+#include <sqlite3.h>
 
-int luaopen_assref_mappool(lua_State *L);
+typedef struct aref_migration {
+	int (*up)(sqlite3 *db);
+	int (*down)(sqlite3 *db);
+} aref_migration;
+
+extern const aref_migration aref_dbmigration_initial_migration;
+
+extern const aref_migration *aref_migrations[];
+
+extern int aref_db_init(sqlite3 *db);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* !_AREF__LUAAPI_H */
+#endif /* !_AREF__MIGRATIONS_H */

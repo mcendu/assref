@@ -21,46 +21,37 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#include <decode.h>
+#include <migrations.h>
+#include <stdlib.h>
 
-#include <gtest/gtest.h>
-
-#include <mappool.h>
-#include "dbtest.h"
-
-class TestDecode : public TestDatabase
+static int up(sqlite3 *cursor)
 {
+	return sqlite3_exec(
+		cursor,
+		u8"BEGIN TRANSACTION;"
 
-};
+		u8"CREATE TABLE aref_metadata (key TEXT PRIMARY KEY, value);"
 
-TEST_F(TestDecode, poolentry)
-{
-	aref_mapdata mapdata;
-	FILE *f = fopen("tests/data/poolentry.csv", "r");
+		u8"CREATE TABLE mappool ("
+		u8"   mapcode CHAR(6) PRIMARY KEY,"
+		u8"   mode INTEGER,"
+		u8"   beatmapid INTEGER);"
 
-	aref_decodepoolentry(&mapdata, f);
-	ASSERT_STREQ(mapdata.code, "rc1");
-	ASSERT_EQ(mapdata.beatmapid, 3861836);
-	ASSERT_EQ(mapdata.mode, 3);
-	aref_decodepoolentry(&mapdata, f);
-	ASSERT_STREQ(mapdata.code, "rc2");
-	ASSERT_EQ(mapdata.beatmapid, 3573500);
-	aref_decodepoolentry(&mapdata, f);
-	ASSERT_STREQ(mapdata.code, "rc3");
-	aref_decodepoolentry(&mapdata, f);
-	ASSERT_STREQ(mapdata.code, "rc4");
+		// set migration revision
+		u8"REPLACE INTO aref_metadata (key, value) VALUES('revision', 0);"
+
+		u8"COMMIT TRANSACTION;",
+		NULL, NULL, NULL);
 }
 
-TEST_F(TestDecode, pool)
+static int down(sqlite3 *cursor)
 {
-	ASSERT_NE(db, nullptr);
-	aref_mapdata data;
-
-	FILE *f = fopen("tests/data/pool.csv", "r");
-	EXPECT_EQ(aref_loadmappool(db, f), 11);
-	fclose(f);
-
-	aref_mappool_find(db, "rc4", &data);
-	EXPECT_STREQ(data.code, "rc4");
-	EXPECT_EQ(data.beatmapid, 2717089);
+	return sqlite3_exec(cursor,
+						u8"BEGIN TRANSACTION;"
+						u8"DROP TABLE mappool;"
+						u8"DROP TABLE aref_metadata;"
+						u8"COMMIT TRANSACTION;",
+						NULL, NULL, NULL);
 }
+
+const aref_migration aref_dbmigration_initial_migration = {up, down};
