@@ -33,11 +33,11 @@
 int aref_loadmappool(sqlite3 *db, FILE *f)
 {
 	int rowcount = 0;
-	// not using aref_mappool_insert() as it
-	// recompiles our query again and again
 	sqlite3_exec(db, "BEGIN TRANSACTION;", NULL, NULL, NULL);
 	// clean start
 	sqlite3_exec(db, "DELETE FROM mappool;", NULL, NULL, NULL);
+	// not using aref_mappool_insert() as it
+	// recompiles our query again and again
 	sqlite3_stmt *load_query;
 	sqlite3_prepare_v2(db, aref_mappool_insert_query, -1, &load_query, NULL);
 	if (load_query == NULL) return 0;
