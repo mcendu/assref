@@ -34,7 +34,7 @@ void TestDatabase::SetUpTestSuite()
 void TestDatabase::TearDownTestSuite()
 {
 	sqlite3_close(db);
-	unlink("test.db");
+	remove("test.db");
 }
 
 testing::AssertionResult DbAccessSuccess(int code, char *error)
