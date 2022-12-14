@@ -27,7 +27,7 @@
 
 static const char insertion_query[]
 	= u8"REPLACE INTO mappool (mapcode,mode,beatmapid) "
-	  u8"VALUES(:code,:mode,:beatmapid);";
+	  u8"VALUES(lower(:code),:mode,:beatmapid);";
 const char *aref_mappool_insert_query = insertion_query;
 
 int aref_mappool_insert(sqlite3 *db, aref_mapdata *map)
@@ -49,7 +49,7 @@ int aref_mappool_insert(sqlite3 *db, aref_mapdata *map)
 }
 
 const char find_query[]
-	= u8"SELECT mapcode,mode,beatmapid FROM mappool WHERE mapcode=?";
+	= u8"SELECT mapcode,mode,beatmapid FROM mappool WHERE mapcode=lower(?)";
 const char *aref_mappool_find_query = find_query;
 
 int aref_mappool_find(sqlite3 *db, const char *code, aref_mapdata *data)
