@@ -25,4 +25,5 @@ lib = shared_library('assref', src,
 	dependencies: lib_deps)
 dep = declare_dependency(
 	link_with: lib,
+	dependencies: lib_deps,
 	include_directories: inc)
