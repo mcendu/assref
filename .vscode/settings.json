@@ -1,0 +1,17 @@
+{
+    "psi-header.config": {
+		"license": "CustomUri",
+    },
+	"psi-header.license-reference": {
+		"uri": ".fileheader",
+		"uriIsLocalFile": true
+	},
+	"psi-header.templates": [
+		{
+			"language": "*",
+			"template": [
+				"<<licensetext>>"
+			]
+		}
+	]
+}

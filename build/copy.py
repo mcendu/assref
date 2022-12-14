@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+#
+# SPDX-License-Identifier: CC0-1.0
+# This file is licensed under Creative Commons Zero v1.0 Universal.
+# See <https://creativecommons.org/publicdomain/zero/1.0/>.
 '''
 Usage: copy.py SOURCE... DIRECTORY
 
