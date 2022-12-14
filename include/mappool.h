@@ -53,11 +53,6 @@ enum aref_mode {
 	AREF_MODE_MANIA
 };
 
-/**
- * @deprecated
- */
-typedef sqlite3 aref_mappool;
-
 /*
  * Methods
  */
