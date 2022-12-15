@@ -30,6 +30,7 @@ const struct arefxchat_command command_list[]
 	= {{"HELP",
 		"Usage: AREF HELP <command>, prints help text of an AssRef command",
 		arefxchat_help},
+		{"LOAD", "Usage: AREF LOAD <path>, loads a database file", arefxchat_load},
 	   {NULL, NULL, NULL}};
 
 void arefxchat_help(struct plugindata *data, char **word, char **word_eol)

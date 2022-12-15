@@ -27,9 +27,8 @@ int load_database(struct plugindata *data, char *path)
 	int result = aref_db_open(path, &data->db);
 
 	if (result != SQLITE_OK) {
-		char *errmsg = sqlite3_errmsg(data->db);
 		hexchat_printf(ph, "Cannot open database %s: %s",
-			path, errmsg);
+			path, sqlite3_errmsg(data->db));
 	}
 
 	return result;
@@ -42,7 +41,9 @@ void arefxchat_load(struct plugindata *data, char **word, char **word_eol)
 	path[511] = 0;
 
 	hexchat_pluginpref_set_str(ph, "database", path);
-	load_database(data, path);
+	if (load_database(data, path) == SQLITE_OK) {
+		hexchat_print(ph, "Successfully opened database.");
+	}
 }
 
 int init_database(struct plugindata *data)
