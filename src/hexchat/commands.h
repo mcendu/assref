@@ -20,6 +20,8 @@
 #ifndef _AREFXCHAT__COMMANDS_H
 #define _AREFXCHAT__COMMANDS_H
 
+#include "plugindata.h"
+
 struct arefxchat_command {
 	/**
 	 * @brief The name of the command.

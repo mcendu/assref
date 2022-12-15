@@ -17,8 +17,8 @@
  *
  */
 
-#include "plugindata.h"
 #include "commands.h"
+#include "plugindata.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -26,12 +26,12 @@
 hexchat_plugin *ph = NULL;
 static struct plugindata plugindata = {};
 
-const struct arefxchat_command command_list[]
-	= {{"HELP",
-		"Usage: AREF HELP <command>, prints help text of an AssRef command",
-		arefxchat_help},
-		{"LOAD", "Usage: AREF LOAD <path>, loads a database file", arefxchat_load},
-	   {NULL, NULL, NULL}};
+const struct arefxchat_command command_list[] = {
+	{"HELP",
+	 "Usage: AREF HELP <command>, prints help text of an AssRef command",
+	 arefxchat_help},
+	{"LOAD", "Usage: AREF LOAD <path>, loads a database file", arefxchat_load},
+	{NULL, NULL, NULL}};
 
 void arefxchat_help(struct plugindata *data, char **word, char **word_eol)
 {
@@ -49,6 +49,11 @@ int run_ref_command(char **word, char **word_eol, void *userdata)
 	char **callback_word = &word[3];
 	char **callback_wordeol = &word_eol[3];
 
+	if (command_name[0] == 0) {
+		hexchat_print(ph, "No AssRef subcommand specified");
+		goto prompt_help;
+	}
+
 	for (const struct arefxchat_command *i = command_list; i->name != NULL;
 		 ++i) {
 		if (strcasecmp(i->name, command_name) == 0) {
@@ -58,6 +63,7 @@ int run_ref_command(char **word, char **word_eol, void *userdata)
 	}
 
 	hexchat_printf(ph, "Not an AssRef command: %s", command_name);
+prompt_help:
 	hexchat_print(ph, "Use \"/aref help\" for a list of commands.");
 	return HEXCHAT_EAT_PLUGIN;
 }
