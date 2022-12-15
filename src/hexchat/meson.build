@@ -1,5 +1,5 @@
 src_hexchat = [
-	'config.c',
+	'load.c',
 	'main.c',
 ]
 
