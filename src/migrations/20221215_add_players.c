@@ -20,33 +20,33 @@
 #include <migrations.h>
 #include <stdlib.h>
 
-const char current_schema[]
-	= (u8"BEGIN TRANSACTION;"
-
-	   u8"CREATE TABLE aref_metadata (key TEXT PRIMARY KEY, value);"
-
-	   u8"CREATE TABLE mappool ("
-	   u8"mapcode CHAR(6) PRIMARY KEY,"
-	   u8"mode INTEGER,"
-	   u8"beatmapid INTEGER);"
-
-	   u8"CREATE TABLE players ("
-	   u8"   username CHAR(15) PRIMARY KEY,"
-	   u8"   id INTEGER,"
-	   u8"   team VARCHAR(63));"
-
-	   // set migration revision
-	   u8"REPLACE INTO aref_metadata (key, value) VALUES('revision', 1);"
-
-	   u8"COMMIT TRANSACTION;");
-
-const aref_migration *aref_migrations[] = {
-	&aref_dbmigration_initial_migration,
-	&aref_dbmigration_add_players,
-	NULL /* allows easy checking if a migration is latest */
-};
-
-int aref_db_init(sqlite3 *db)
+static int up(sqlite3 *db)
 {
-	return sqlite3_exec(db, current_schema, NULL, NULL, NULL);
+	return sqlite3_exec(
+		db,
+		u8"BEGIN TRANSACTION;"
+
+		u8"CREATE TABLE players ("
+		u8"   username CHAR(15) PRIMARY KEY,"
+		u8"   id INTEGER,"
+		u8"   team VARCHAR(63));"
+
+		// set migration revision
+		u8"UPDATE aref_metadata SET value=1 WHERE key='revision');"
+
+		u8"COMMIT TRANSACTION;",
+		NULL, NULL, NULL);
 }
+
+static int down(sqlite3 *db)
+{
+	return sqlite3_exec(
+		db,
+		u8"BEGIN TRANSACTION;"
+		u8"DROP TABLE players;"
+		u8"UPDATE aref_metadata SET value=0 WHERE key='revision');"
+		u8"COMMIT TRANSACTION;",
+		NULL, NULL, NULL);
+}
+
+const aref_migration aref_dbmigration_add_players = {up, down};
