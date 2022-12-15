@@ -24,6 +24,8 @@
 
 int load_database(struct plugindata *data, char *path)
 {
+	// close database to prevent memory leak
+	sqlite3_close(data->db);
 	int result = aref_db_open(path, &data->db);
 
 	if (result != SQLITE_OK) {
