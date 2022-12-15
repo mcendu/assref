@@ -20,6 +20,10 @@
 #ifndef _AREFXCHAT__PLUGINDATA_H
 #define _AREFXCHAT__PLUGINDATA_H
 
+#ifdef _WIN32
+#define WIN32 _WIN32
+#endif
+
 #include <hexchat-plugin.h>
 #include <sqlite3.h>
 
