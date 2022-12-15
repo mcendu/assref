@@ -5,5 +5,5 @@ src_hexchat = [
 ]
 
 foreach item : src_hexchat
-	src += 'hexchat' / item
+	mod_src += 'hexchat' / item
 endforeach
