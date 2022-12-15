@@ -55,6 +55,7 @@ int aref_db_migrate(sqlite3 *cursor)
 						   -1, &getrev, NULL);
 		if ((resultcode = sqlite3_step(getrev)) == SQLITE_ROW) {
 			dbrev = sqlite3_column_int(getrev, 0);
+			sqlite3_finalize(getrev);
 
 			for (int i = dbrev + 1; aref_migrations[i] != NULL; ++i) {
 				int result = aref_migrations[i]->up(cursor);
