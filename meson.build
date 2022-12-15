@@ -1,6 +1,9 @@
 project('assref', 'c',
 	meson_version: '>=0.55.0',
-	license: 'MIT')
+	license: 'MIT',
+	default_options: [
+		'c_std=c11'
+	])
 
 cp = find_program('cp', 'build/copy.py', required: false)
 
