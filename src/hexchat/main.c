@@ -18,11 +18,13 @@
  */
 
 #include "plugindata.h"
+#include "commands.h"
 
 #include <stdlib.h>
 #include <string.h>
 
-static struct plugindata plugindata = {NULL, NULL};
+hexchat_plugin *ph = NULL;
+static struct plugindata plugindata = {};
 
 const struct arefxchat_command command_list[]
 	= {{"HELP",
@@ -32,15 +34,16 @@ const struct arefxchat_command command_list[]
 
 void arefxchat_help(struct plugindata *data, char **word, char **word_eol)
 {
-	hexchat_print(data->xchat, "AREF subcommands:");
+	hexchat_print(ph, "AREF subcommands:");
 	for (const struct arefxchat_command *i = command_list; i->name != NULL;
 		 ++i) {
-		hexchat_printf(data->xchat, "    %s", i->name);
+		hexchat_printf(ph, "    %s", i->name);
 	}
 }
 
-int run_ref_command(char **word, char **word_eol, struct plugindata *data)
+int run_ref_command(char **word, char **word_eol, void *userdata)
 {
+	struct plugindata *data = userdata;
 	char *command_name = word[2];
 	char **callback_word = &word[3];
 	char **callback_wordeol = &word_eol[3];
@@ -53,23 +56,32 @@ int run_ref_command(char **word, char **word_eol, struct plugindata *data)
 		}
 	}
 
-	hexchat_printf(data->xchat, "Not an AssRef command: %s", command_name);
-	hexchat_print(data->xchat, "Use \"/aref help\" for a list of commands.");
+	hexchat_printf(ph, "Not an AssRef command: %s", command_name);
+	hexchat_print(ph, "Use \"/aref help\" for a list of commands.");
 	return HEXCHAT_EAT_PLUGIN;
 }
 
 int hexchat_plugin_init(hexchat_plugin *xchat, char **plugin_name,
 						char **plugin_desc, char **plugin_version, char *arg)
 {
-	plugindata.xchat = xchat;
+	ph = xchat;
 
 	*plugin_name = "assref";
 	*plugin_desc = "osu! tournament referee's robotic assistant";
 	*plugin_version = "0.1";
 
-	hexchat_hook_command(xchat, "aref", HEXCHAT_PRI_NORM, run_ref_command,
+	init_database(&plugindata);
+
+	hexchat_hook_command(ph, "aref", HEXCHAT_PRI_NORM, run_ref_command,
 						 "Usage: AREF <subcommand> ...", &plugindata);
 
-	hexchat_print(xchat, "AssRef loaded.");
+	hexchat_print(ph, "AssRef loaded.");
+	return 1;
+}
+
+int hexchat_plugin_deinit(hexchat_plugin *xchat)
+{
+	sqlite3_close(plugindata.db);
+	hexchat_print(ph, "AssRef unloaded.");
 	return 1;
 }

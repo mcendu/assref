@@ -23,28 +23,14 @@
 #include <hexchat-plugin.h>
 #include <sqlite3.h>
 
+/* required to be a global variable as otherwise it won't build on win32 */
+extern hexchat_plugin *ph;
+
 struct plugindata {
-	hexchat_plugin *xchat;
 	sqlite3 *db;
 };
 
-struct arefxchat_command {
-	/**
-	 * @brief The name of the command.
-	 */
-	const char *name;
-	/**
-	 * @brief The help text of the command.
-	 */
-	const char *helptext;
-	/**
-	 * @brief A callback run when calling this command.
-	 *
-	 * Unlike in the HexChat plugin API, indices are zero based instead
-	 * of one based. word[0] refers not to the command name but to the
-	 * first parameter.
-	 */
-	void (*callback)(struct plugindata *, char **word, char **word_eol);
-};
+#define WARNING(str) \
+	hexchat_emit_print(ph, "Private Message", "AssRef", (str), NULL)
 
 #endif /* !_AREFXCHAT__PLUGINDATA_H */

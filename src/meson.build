@@ -22,6 +22,7 @@ lib = shared_library('assref', src,
 	include_directories: inc,
 	install: true,
 	install_dir: get_option('libdir'),
+	override_options: 'b_lundef=false',
 	dependencies: lib_deps)
 dep = declare_dependency(
 	link_with: lib,
