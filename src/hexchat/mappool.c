@@ -34,7 +34,7 @@ void arefxchat_loadmappool(struct plugindata *data, char **word,
 	int loaded = aref_loadmappool(data->db, f);
 	fclose(f);
 
-	hexchat_printf("Loaded %d maps from %s", loaded, word_eol[0]);
+	hexchat_printf(ph, "Loaded %d maps from %s", loaded, word_eol[0]);
 }
 
 void arefxchat_setmap(struct plugindata *data, char **word, char **word_eol)
@@ -45,10 +45,10 @@ void arefxchat_setmap(struct plugindata *data, char **word, char **word_eol)
 	}
 
 	aref_mapdata map;
-	if (aref_mappool_find(data->db, word[0], &data) != 0) {
+	if (aref_mappool_find(data->db, word[0], &map) != 0) {
 		hexchat_printf(ph, "Cannot find beatmap \"%s\"", word[0]);
 	} else {
-		hexchat_commandf(ph, "SAY !mp map %d %d", map.beatmapid, map.mode);
+		hexchat_commandf(ph, "SAY !mp map %lld %d", map.beatmapid, map.mode);
 		hexchat_printf(ph, "Set current map to %s", map.code);
 	}
 }
