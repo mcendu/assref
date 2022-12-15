@@ -1,9 +1,11 @@
-src_hexchat = [
+mod_src = [
 	'load.c',
 	'main.c',
 	'mappool.c',
 ]
 
-foreach item : src_hexchat
-	mod_src += 'hexchat' / item
-endforeach
+mod = shared_module('assref_hexchat', mod_src,
+	include_directories: inc,
+	dependencies: [lib_deps, dep, hexchat_dep],
+	install: true,
+	install_dir: get_option('libdir') / 'hexchat/plugins')
