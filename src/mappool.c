@@ -23,8 +23,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define ALLOCATION_UNIT 32
-
 static const char insertion_query[]
 	= u8"REPLACE INTO mappool (mapcode,mode,beatmapid) "
 	  u8"VALUES(lower(:code),:mode,:beatmapid);";
@@ -48,7 +46,7 @@ int aref_mappool_insert(sqlite3 *db, aref_mapdata *map)
 	return status == SQLITE_DONE ? 0 : status;
 }
 
-const char find_query[]
+static const char find_query[]
 	= u8"SELECT mapcode,mode,beatmapid FROM mappool WHERE mapcode=lower(?)";
 const char *aref_mappool_find_query = find_query;
 
