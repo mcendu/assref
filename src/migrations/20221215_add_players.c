@@ -32,7 +32,7 @@ static int up(sqlite3 *db)
 		u8"   team VARCHAR(63));"
 
 		// set migration revision
-		u8"UPDATE aref_metadata SET value=1 WHERE key='revision');"
+		u8"UPDATE aref_metadata SET value=1 WHERE key='revision';"
 
 		u8"COMMIT TRANSACTION;",
 		NULL, NULL, NULL);
