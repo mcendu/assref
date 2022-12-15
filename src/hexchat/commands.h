@@ -36,7 +36,7 @@ struct arefxchat_command {
 	 *
 	 * Unlike in the HexChat plugin API, indices are zero based instead
 	 * of one based. word[0] refers not to the command name but to the
-	 * first parameter.
+	 * first parameter of the subcommand.
 	 */
 	void (*callback)(struct plugindata *, char **word, char **word_eol);
 };
@@ -46,6 +46,10 @@ extern void arefxchat_help(struct plugindata *, char **, char **);
 
 /* Database */
 extern void arefxchat_load(struct plugindata *, char **, char **);
+
+/* Mappool */
+extern void arefxchat_loadmappool(struct plugindata *, char **, char **);
+extern void arefxchat_setmap(struct plugindata *, char **, char **);
 
 /* Misc functions */
 extern int init_database(struct plugindata *);
