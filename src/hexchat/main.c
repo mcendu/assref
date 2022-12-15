@@ -37,13 +37,35 @@ const struct arefxchat_command command_list[] = {
 	 arefxchat_loadmappool},
 	{NULL, NULL, NULL}};
 
-void arefxchat_help(struct plugindata *data, char **word, char **word_eol)
+void list_commands()
 {
 	hexchat_print(ph, "AREF subcommands:");
 	for (const struct arefxchat_command *i = command_list; i->name != NULL;
 		 ++i) {
 		hexchat_printf(ph, "    %s", i->name);
 	}
+}
+
+void find_help(char *command)
+{
+	for (const struct arefxchat_command *i = command_list; i->name != NULL;
+		 ++i) {
+		if (strcasecmp(i->name, command) == 0) {
+			hexchat_print(ph, i->helptext);
+			return;
+		}
+	}
+
+	hexchat_printf(ph, "Not an AssRef command: %s", command);
+	list_commands();
+}
+
+void arefxchat_help(struct plugindata *data, char **word, char **word_eol)
+{
+	if (word[0][0] == 0)
+		return list_commands();
+
+	find_help(word[0]);
 }
 
 int run_ref_command(char **word, char **word_eol, void *userdata)
