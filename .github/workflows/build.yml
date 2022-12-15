@@ -36,7 +36,6 @@ jobs:
           --backend ninja \
           --buildtype ${{ matrix.buildtype }} \
           --prefix=${{ env.prefix }} \
-          -Dlua=lua5.3 \
           builddir
 
     - name: Build
