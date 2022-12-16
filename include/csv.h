@@ -33,6 +33,58 @@ extern "C" {
 #include <stdio.h>
 
 /**
+ * @brief Defines how a CSV field is processed.
+ */
+typedef struct aref_fielddef {
+	/**
+	 * @brief The offset of the destination relative to dst.
+	 */
+	size_t offset;
+	/**
+	 * @brief A callback determining how a field is processed.
+	 */
+	int (*process)(void *dst, const char *raw, size_t size);
+	/**
+	 * @brief Size of the destination in bytes.
+	 */
+	size_t size;
+} aref_fielddef;
+
+#define AREF_FIELDDEF_END                                                      \
+	(aref_fielddef)                                                            \
+	{                                                                          \
+		0, NULL, 0                                                             \
+	}
+
+#define AREF_CSV_ERROR -1    // irrecoverable error
+#define AREF_CSV_OK 0        // general ok result
+#define AREF_CSV_DONE 0      // reading complete
+#define AREF_CSV_LINE 1      // a line has been read
+#define AREF_CSV_MALFORMED 2 // line is malformed and should be discarded
+
+/**
+ * @brief Reads and processes a line of CSV.
+ *
+ * @param file File to read.
+ * @param dst The destination to which data is written.
+ * @param defs An AREF_FIELDDEF_END-terminated list of field definitions.
+ * @return
+ */
+extern int aref_readcsvline(FILE *file, void *dst, aref_fielddef *defs);
+
+extern int AREF_FIELD_INT8(void *, const char *, size_t);
+extern int AREF_FIELD_INT16(void *, const char *, size_t);
+extern int AREF_FIELD_INT32(void *, const char *, size_t);
+extern int AREF_FIELD_INT64(void *, const char *, size_t);
+extern int AREF_FIELD_UINT8(void *, const char *, size_t);
+extern int AREF_FIELD_UINT16(void *, const char *, size_t);
+extern int AREF_FIELD_UINT32(void *, const char *, size_t);
+extern int AREF_FIELD_UINT64(void *, const char *, size_t);
+extern int AREF_FIELD_FLOAT(void *, const char *, size_t);
+extern int AREF_FIELD_DOUBLE(void *, const char *, size_t);
+extern int AREF_FIELD_STR(void *, const char *, size_t);
+
+/**
  * @brief Reads a single field from a file.
  *
  * The function takes the size of the buffer as an argument.
@@ -44,7 +96,6 @@ extern "C" {
  * @return Number of bytes read.
  */
 extern size_t aref_readfield(char *buffer, FILE *file, size_t size, char *end);
-
 /**
  * @brief Reads a single field from a null-terminated string.
  *
@@ -54,7 +105,8 @@ extern size_t aref_readfield(char *buffer, FILE *file, size_t size, char *end);
  * @param end If not NULL, the last character read is written here.
  * @return Number of bytes read.
  */
-extern size_t aref_sreadfield(char *buffer, const char *string, size_t size, char *end);
+extern size_t aref_sreadfield(char *buffer, const char *string, size_t size,
+							  char *end);
 
 /**
  * @brief Seek to the next line of a file.

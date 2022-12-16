@@ -19,12 +19,48 @@
 
 #include <csv.h>
 
+#include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 
 #include <gtest/gtest.h>
 
-TEST(TestCsv, basic)
+extern "C" struct test_struct {
+	char str[8];
+	int32_t integer;
+	float real;
+};
+
+aref_fielddef test_fields[]
+	= {{offsetof(test_struct, str), AREF_FIELD_STR, 8},
+	   {offsetof(test_struct, integer), AREF_FIELD_INT32, sizeof(int32_t)},
+	   {offsetof(test_struct, real), AREF_FIELD_FLOAT, sizeof(float)},
+	   AREF_FIELDDEF_END};
+
+TEST(TestCsv, line)
+{
+	test_struct t;
+	FILE *f = fopen("tests/data/line.csv", "r");
+	ASSERT_NE(f, nullptr);
+
+	EXPECT_EQ(aref_readcsvline(f, &t, test_fields), AREF_CSV_LINE);
+	EXPECT_STREQ(t.str, "rc1");
+	EXPECT_EQ(t.integer, 3861836);
+	EXPECT_EQ(t.real, 3.0f);
+
+	EXPECT_EQ(aref_readcsvline(f, &t, test_fields), AREF_CSV_LINE);
+	EXPECT_EQ(t.real, 3.1415926f);
+
+	EXPECT_EQ(aref_readcsvline(f, &t, test_fields), AREF_CSV_MALFORMED);
+	EXPECT_EQ(aref_readcsvline(f, &t, test_fields), AREF_CSV_MALFORMED);
+	EXPECT_EQ(aref_readcsvline(f, &t, test_fields), AREF_CSV_MALFORMED);
+	EXPECT_EQ(aref_readcsvline(f, &t, test_fields), AREF_CSV_MALFORMED);
+	EXPECT_EQ(aref_readcsvline(f, &t, test_fields), AREF_CSV_LINE);
+
+	EXPECT_EQ(aref_readcsvline(f, &t, test_fields), AREF_CSV_DONE);
+}
+
+TEST(TestCsv, fieldbasic)
 {
 	char str[8];
 	FILE *f = fopen("tests/data/basic.csv", "r");
@@ -41,7 +77,7 @@ TEST(TestCsv, basic)
 	fclose(f);
 }
 
-TEST(TestCsv, multiline)
+TEST(TestCsv, fieldmultiline)
 {
 	char str[8];
 	char end;
@@ -101,7 +137,7 @@ TEST(TestCsv, string)
 	fclose(f);
 }
 
-TEST(TestCsv, empty)
+TEST(TestCsv, fieldempty)
 {
 	char str[8];
 	FILE *f = fopen("tests/data/empty.csv", "r");
@@ -113,7 +149,7 @@ TEST(TestCsv, empty)
 	fclose(f);
 }
 
-TEST(TestCsv, escape)
+TEST(TestCsv, fieldescape)
 {
 	char str[24];
 	FILE *f = fopen("tests/data/escape.csv", "r");
@@ -142,7 +178,7 @@ TEST(TestCsv, escape)
 	fclose(f);
 }
 
-TEST(TestCsv, crlf)
+TEST(TestCsv, fieldcrlf)
 {
 	char str[8];
 	char end;
@@ -159,7 +195,7 @@ TEST(TestCsv, crlf)
 	fclose(f);
 }
 
-TEST(TestCsv, toolong)
+TEST(TestCsv, fieldtoolong)
 {
 	char str[8];
 	FILE *f = fopen("tests/data/toolong.csv", "r");
@@ -189,4 +225,3 @@ TEST(TestCsv, skip)
 
 	fclose(f);
 }
-

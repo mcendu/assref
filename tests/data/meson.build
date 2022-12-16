@@ -3,6 +3,7 @@ testdata_src = [
 	'crlf.csv',
 	'empty.csv',
 	'escape.csv',
+	'line.csv',
 	'multiline.csv',
 	'pool.csv',
 	'poolentry.csv',

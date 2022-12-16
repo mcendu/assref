@@ -19,7 +19,187 @@
 
 #include <csv.h>
 
+#include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int aref_readcsvline(FILE *f, void *dst, aref_fielddef *defs)
+{
+	if (aref_eof(f))
+		return AREF_CSV_DONE;
+
+	char buf[128];
+	char last = 0;
+
+	for (aref_fielddef *field = defs; field->process != NULL; ++field) {
+		if (last == '\n')
+			return AREF_CSV_MALFORMED; // too few fields
+		aref_readfield(buf, f, 128, &last);
+
+		void *dst_field = (void *)((char *)dst + field->offset);
+		int result = field->process(dst_field, buf, field->size);
+		if (result == AREF_CSV_MALFORMED) {
+			aref_fskipline(f);
+		}
+		if (result != AREF_CSV_OK) {
+			// decoding error
+			return result;
+		}
+	}
+
+	if (last != '\n') {
+		aref_fskipline(f);
+		return AREF_CSV_MALFORMED; // too many fields
+	}
+	return AREF_CSV_LINE;
+}
+
+int AREF_FIELD_INT8(void *dstptr, const char *raw, size_t size)
+{
+	int8_t *dst = dstptr;
+	char *endptr;
+
+	long cvt = strtol(raw, &endptr, 0);
+	if (*endptr != 0)
+		return AREF_CSV_MALFORMED;
+
+	if (cvt > INT8_MAX || cvt < INT8_MIN)
+		return AREF_CSV_MALFORMED;
+
+	*dst = (int8_t)cvt;
+	return AREF_CSV_OK;
+}
+
+int AREF_FIELD_INT16(void *dstptr, const char *raw, size_t size)
+{
+	int16_t *dst = dstptr;
+	char *endptr;
+
+	long cvt = strtol(raw, &endptr, 0);
+	if (*endptr != 0)
+		return AREF_CSV_MALFORMED;
+
+	if (cvt > INT16_MAX || cvt < INT16_MIN)
+		return AREF_CSV_MALFORMED;
+
+	*dst = (int16_t)cvt;
+	return AREF_CSV_OK;
+}
+
+int AREF_FIELD_INT32(void *dstptr, const char *raw, size_t size)
+{
+	int32_t *dst = dstptr;
+	char *endptr;
+
+	long cvt = strtol(raw, &endptr, 0);
+	if (*endptr != 0)
+		return AREF_CSV_MALFORMED;
+
+	if (cvt > INT32_MAX || cvt < INT32_MIN)
+		return AREF_CSV_MALFORMED;
+
+	*dst = (int32_t)cvt;
+	return AREF_CSV_OK;
+}
+
+int AREF_FIELD_INT64(void *dstptr, const char *raw, size_t size)
+{
+	int64_t *dst = dstptr;
+	char *endptr;
+
+	long long cvt = strtol(raw, &endptr, 0);
+	if (*endptr != 0)
+		return AREF_CSV_MALFORMED;
+
+	if (cvt > INT64_MAX || cvt < INT64_MIN)
+		return AREF_CSV_MALFORMED;
+
+	*dst = (int64_t)cvt;
+	return AREF_CSV_OK;
+}
+
+int AREF_FIELD_UINT8(void *dstptr, const char *raw, size_t size)
+{
+	uint8_t *dst = dstptr;
+	char *endptr;
+
+	*dst = (uint8_t)strtol(raw, &endptr, 0);
+	if (*endptr != 0)
+		return AREF_CSV_MALFORMED;
+
+	return AREF_CSV_OK;
+}
+
+int AREF_FIELD_UINT16(void *dstptr, const char *raw, size_t size)
+{
+	uint16_t *dst = dstptr;
+	char *endptr;
+
+	*dst = (uint16_t)strtol(raw, &endptr, 0);
+	if (*endptr != 0)
+		return AREF_CSV_MALFORMED;
+
+	return AREF_CSV_OK;
+}
+
+int AREF_FIELD_UINT32(void *dstptr, const char *raw, size_t size)
+{
+	uint32_t *dst = dstptr;
+	char *endptr;
+
+	*dst = (uint32_t)strtol(raw, &endptr, 0);
+	if (*endptr != 0)
+		return AREF_CSV_MALFORMED;
+
+	return AREF_CSV_OK;
+}
+
+int AREF_FIELD_UINT64(void *dstptr, const char *raw, size_t size)
+{
+	uint64_t *dst = dstptr;
+	char *endptr;
+
+	*dst = (uint64_t)strtol(raw, &endptr, 0);
+	if (*endptr != 0)
+		return AREF_CSV_MALFORMED;
+
+	return AREF_CSV_OK;
+}
+
+int AREF_FIELD_FLOAT(void *dst, const char *raw, size_t size)
+{
+	float *result = dst;
+	char *endptr;
+
+	*result = strtof(raw, &endptr);
+	if (*endptr != 0)
+		return AREF_CSV_MALFORMED;
+
+	return AREF_CSV_OK;
+}
+
+int AREF_FIELD_DOUBLE(void *dst, const char *raw, size_t size)
+{
+	double *result = dst;
+	char *endptr;
+
+	*result = strtod(raw, &endptr);
+	if (*endptr != 0)
+		return AREF_CSV_MALFORMED;
+
+	return AREF_CSV_OK;
+}
+
+int AREF_FIELD_STR(void *dst, const char *raw, size_t size)
+{
+	if (strlen(raw) + 1 > size)
+		return AREF_CSV_MALFORMED;
+
+	char *result = dst;
+	strcpy(result, raw);
+	return AREF_CSV_OK;
+}
 
 /**
  * @param c The character read.
@@ -30,8 +210,8 @@
  * @param count A counter that counts the number of bytes written.
  * @return 0 if no further reading is desired; 1 otherwise.
  */
-static inline int read_char(int *c, char **it, char *end, int *quote,
-							char lastread, size_t *count)
+static inline int parse_char(int *c, char **it, char *end, int *quote,
+							 char lastread, size_t *count)
 {
 	if (*c == EOF || *c == 0)
 		return 0;
@@ -78,8 +258,8 @@ size_t aref_readfield(char *i, FILE *f, size_t size, char *last)
 	int q = 0;
 	char lastread = 0;
 
-	while ((c = getc(f))) {
-		if (!read_char(&c, &i, bufend, &q, lastread, &wcount))
+	while ((c = getc(f)), 1) {
+		if (!parse_char(&c, &i, bufend, &q, lastread, &wcount))
 			break;
 		lastread = c;
 	}
@@ -99,7 +279,7 @@ size_t aref_sreadfield(char *i, const char *j, size_t size, char *last)
 	char lastread = 0;
 
 	while ((c = *(j++))) {
-		if (!read_char(&c, &i, bufend, &q, lastread, &wcount))
+		if (!parse_char(&c, &i, bufend, &q, lastread, &wcount))
 			break;
 		lastread = c;
 	}
@@ -120,7 +300,9 @@ size_t aref_fskipline(FILE *f)
 
 int aref_eof(FILE *f)
 {
-	int c = getc(f);
+	int c;
+	while ((c = getc(f)), c == '\n' || c == '\r')
+		; // gobble up empty lines
 	if (c == EOF)
 		return 1;
 	ungetc(c, f);
