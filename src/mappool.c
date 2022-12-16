@@ -61,7 +61,8 @@ int aref_mappool_find(sqlite3 *db, const char *code, aref_mapdata *data)
 
 	status = sqlite3_step(query);
 	if (status == SQLITE_ROW) {
-		strcpy(data->code, (const char *)sqlite3_column_text(query, 0));
+		strncpy(data->code, (const char *)sqlite3_column_text(query, 0), 7);
+		data->code[6] = 0;
 		data->mode = sqlite3_column_int(query, 1);
 		data->beatmapid = sqlite3_column_int64(query, 2);
 	}
