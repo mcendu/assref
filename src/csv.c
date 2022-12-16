@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-int aref_readcsvline(FILE *f, void *dst, aref_fielddef *defs)
+int aref_readcsvline(FILE *f, void *dst, const aref_fielddef *defs)
 {
 	if (aref_eof(f))
 		return AREF_CSV_DONE;
@@ -32,7 +32,7 @@ int aref_readcsvline(FILE *f, void *dst, aref_fielddef *defs)
 	char buf[128];
 	char last = 0;
 
-	for (aref_fielddef *field = defs; field->process != NULL; ++field) {
+	for (const aref_fielddef *field = defs; field->process != NULL; ++field) {
 		if (last == '\n')
 			return AREF_CSV_MALFORMED; // too few fields
 		aref_readfield(buf, f, 128, &last);

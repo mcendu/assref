@@ -26,7 +26,7 @@
 #include <csv.h>
 #include <mappool.h>
 
-aref_fielddef mappool_fields[] = {
+const aref_fielddef mappool_fields[] = {
 	{offsetof(aref_mapdata, code), AREF_FIELD_STR, 7},
 	{offsetof(aref_mapdata, beatmapid), AREF_FIELD_INT64, sizeof(int64_t)},
 	{offsetof(aref_mapdata, mode), AREF_FIELD_UINT8, sizeof(int8_t)},

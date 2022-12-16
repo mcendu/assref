@@ -30,6 +30,9 @@
 extern "C" {
 #endif
 
+/* for offsetof(3), which almost all potential users of this header would use */
+#include <stddef.h>
+
 #include <stdio.h>
 
 /**
@@ -72,7 +75,7 @@ typedef struct aref_fielddef {
  * @param defs An AREF_FIELDDEF_END-terminated list of field definitions.
  * @return
  */
-extern int aref_readcsvline(FILE *file, void *dst, aref_fielddef *defs);
+extern int aref_readcsvline(FILE *file, void *dst, const aref_fielddef *defs);
 
 extern int AREF_FIELD_INT8(void *, const char *, size_t);
 extern int AREF_FIELD_INT16(void *, const char *, size_t);
