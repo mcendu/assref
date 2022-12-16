@@ -22,7 +22,7 @@
 #include <migrations.h>
 #include <stdlib.h>
 
-int aref_db_open(char *filename, sqlite3 **cursor)
+int aref_db_open(const char *filename, sqlite3 **cursor)
 {
 	int status = sqlite3_open_v2(
 		filename, cursor, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL);

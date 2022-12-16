@@ -34,7 +34,7 @@ extern "C" {
  * @param cursor A handle to the database is returned here.
  * @return See <https://www.sqlite.org/rescode.html>.
  */
-extern int aref_db_open(char *filename, sqlite3 **cursor);
+extern int aref_db_open(const char *filename, sqlite3 **cursor);
 
 extern int aref_db_migrate(sqlite3 *cursor);
 
