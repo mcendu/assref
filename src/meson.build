@@ -2,6 +2,7 @@ src = [
 	'csv.c',
 	'db.c',
 	'decode.c',
+	'fieldtypes.c',
 	'mappool.c',
 	'playerlist.c',
 ]
