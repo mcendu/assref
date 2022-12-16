@@ -19,6 +19,8 @@
 
 #include "plugindata.h"
 
+#include <inttypes.h>
+
 #include <decode.h>
 #include <mappool.h>
 
@@ -48,7 +50,7 @@ void arefxchat_setmap(struct plugindata *data, char **word, char **word_eol)
 	if (aref_mappool_find(data->db, word[0], &map) != 0) {
 		hexchat_printf(ph, "Cannot find beatmap \"%s\"", word[0]);
 	} else {
-		hexchat_commandf(ph, "SAY !mp map %lld %d", map.beatmapid, map.mode);
+		hexchat_commandf(ph, "SAY !mp map %"PRIu64" %d", map.beatmapid, map.mode);
 		hexchat_printf(ph, "Set current map to %s", map.code);
 	}
 }
