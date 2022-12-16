@@ -53,11 +53,7 @@ typedef struct aref_fielddef {
 	size_t size;
 } aref_fielddef;
 
-#define AREF_FIELDDEF_END                                                      \
-	(aref_fielddef)                                                            \
-	{                                                                          \
-		0, NULL, 0                                                             \
-	}
+#define AREF_FIELDDEF_END {0, NULL, 0}
 
 #define AREF_CSV_ERROR -1    // irrecoverable error
 #define AREF_CSV_OK 0        // general ok result

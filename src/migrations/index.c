@@ -21,24 +21,24 @@
 #include <stdlib.h>
 
 const char current_schema[]
-	= (u8"BEGIN TRANSACTION;"
+	= u8"BEGIN TRANSACTION;"
 
-	   u8"CREATE TABLE aref_metadata (key TEXT PRIMARY KEY, value);"
+	  u8"CREATE TABLE aref_metadata (key TEXT PRIMARY KEY, value);"
 
-	   u8"CREATE TABLE mappool ("
-	   u8"mapcode CHAR(6) PRIMARY KEY,"
-	   u8"mode INTEGER,"
-	   u8"beatmapid INTEGER);"
+	  u8"CREATE TABLE mappool ("
+	  u8"mapcode CHAR(6) PRIMARY KEY,"
+	  u8"mode INTEGER,"
+	  u8"beatmapid INTEGER);"
 
-	   u8"CREATE TABLE players ("
-	   u8"   username CHAR(15) PRIMARY KEY,"
-	   u8"   id INTEGER,"
-	   u8"   team VARCHAR(63));"
+	  u8"CREATE TABLE players ("
+	  u8"   username CHAR(15) PRIMARY KEY,"
+	  u8"   id INTEGER,"
+	  u8"   team VARCHAR(63));"
 
-	   // set migration revision
-	   u8"REPLACE INTO aref_metadata (key, value) VALUES('revision', 1);"
+	  // set migration revision
+	  u8"REPLACE INTO aref_metadata (key, value) VALUES('revision', 1);"
 
-	   u8"COMMIT TRANSACTION;");
+	  u8"COMMIT TRANSACTION;";
 
 const aref_migration *aref_migrations[] = {
 	&aref_dbmigration_initial_migration,

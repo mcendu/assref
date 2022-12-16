@@ -36,6 +36,8 @@ int load_database(struct plugindata *data, char *path)
 	return result;
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 void arefxchat_load(struct plugindata *data, char **word, char **word_eol)
 {
 	char path[512];
@@ -47,6 +49,7 @@ void arefxchat_load(struct plugindata *data, char **word, char **word_eol)
 		hexchat_print(ph, "Successfully opened database.");
 	}
 }
+#pragma GCC diagnostic pop
 
 int init_database(struct plugindata *data)
 {

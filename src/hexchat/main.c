@@ -25,7 +25,7 @@
 #include <strings.h>
 
 hexchat_plugin *ph = NULL;
-static struct plugindata plugindata = {};
+static struct plugindata plugindata = {NULL};
 
 const struct arefxchat_command command_list[] = {
 	{"HELP",
@@ -61,13 +61,16 @@ void find_help(char *command)
 	list_commands();
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 void arefxchat_help(struct plugindata *data, char **word, char **word_eol)
 {
 	if (word[0][0] == 0)
-		return list_commands();
-
-	find_help(word[0]);
+		list_commands();
+	else
+		find_help(word[0]);
 }
+#pragma GCC diagnostic pop
 
 int run_ref_command(char **word, char **word_eol, void *userdata)
 {
@@ -95,6 +98,8 @@ prompt_help:
 	return HEXCHAT_EAT_PLUGIN;
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 int hexchat_plugin_init(hexchat_plugin *xchat, char **plugin_name,
 						char **plugin_desc, char **plugin_version, char *arg)
 {
@@ -119,3 +124,4 @@ int hexchat_plugin_deinit(hexchat_plugin *xchat)
 	hexchat_print(ph, "AssRef unloaded.");
 	return 1;
 }
+#pragma GCC diagnostic pop

@@ -23,6 +23,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* All functions here need to have an identical signature */
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+
 int AREF_FIELD_INT8(void *dstptr, const char *raw, size_t size)
 {
 	int8_t *dst = dstptr;

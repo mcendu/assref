@@ -24,6 +24,9 @@
 #include <decode.h>
 #include <mappool.h>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+
 void arefxchat_loadmappool(struct plugindata *data, char **word,
 						   char **word_eol)
 {
@@ -54,3 +57,5 @@ void arefxchat_setmap(struct plugindata *data, char **word, char **word_eol)
 		hexchat_printf(ph, "Set current map to %s", map.code);
 	}
 }
+
+#pragma GCC diagnostic pop
