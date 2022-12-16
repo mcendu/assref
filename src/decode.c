@@ -26,6 +26,13 @@
 #include <csv.h>
 #include <mappool.h>
 
+aref_fielddef mappool_fields[] = {
+	{offsetof(aref_mapdata, code), AREF_FIELD_STR, 7},
+	{offsetof(aref_mapdata, beatmapid), AREF_FIELD_INT64, sizeof(int64_t)},
+	{offsetof(aref_mapdata, mode), AREF_FIELD_UINT8, sizeof(int8_t)},
+	AREF_FIELDDEF_END
+};
+
 int aref_loadmappool(sqlite3 *db, FILE *f)
 {
 	int rowcount = 0;
@@ -40,9 +47,7 @@ int aref_loadmappool(sqlite3 *db, FILE *f)
 
 	aref_mapdata map;
 
-	while (!aref_eof(f)) {
-		aref_decodepoolentry(&map, f);
-
+	while (AREF_CSV_NOTDONE(aref_readcsvline(f, &map, mappool_fields))) {
 		sqlite3_bind_text(load_query, 1, map.code, -1, SQLITE_STATIC);
 		sqlite3_bind_int64(load_query, 2, map.mode);
 		sqlite3_bind_int(load_query, 3, map.beatmapid);
@@ -56,25 +61,3 @@ int aref_loadmappool(sqlite3 *db, FILE *f)
 	return rowcount;
 }
 
-void aref_decodepoolentry(aref_mapdata *entry, FILE *f)
-{
-	char buf[24];
-	char end;
-
-	// Code,BeatmapID,Mode
-	aref_readfield(entry->code, f, 7, &end);
-	if (end == EOF || end == '\n')
-		return;
-
-	aref_readfield(buf, f, 24, &end);
-	entry->beatmapid = strtoull(buf, NULL, 0);
-	if (end == EOF || end == '\n')
-		return;
-
-	aref_readfield(buf, f, 24, &end);
-	entry->mode = (uint8_t)strtol(buf, NULL, 0);
-	if (end == EOF || end == '\n')
-		return;
-
-	aref_fskipline(f);
-}

@@ -29,14 +29,6 @@ extern "C" {
 #include <stdio.h>
 
 /**
- * @brief Decodes a mappool entry from CSV.
- *
- * @param entry The mappool entry to which data is written.
- * @param file A file to read data from.
- */
-extern void aref_decodepoolentry(aref_mapdata *entry, FILE *file);
-
-/**
  * @brief Loads a mappool from CSV into the database.
  * @param file The file to read data from.
  * @return The number of entries read.

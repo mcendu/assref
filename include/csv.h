@@ -62,6 +62,8 @@ typedef struct aref_fielddef {
 #define AREF_CSV_LINE 1      // a line has been read
 #define AREF_CSV_MALFORMED 2 // line is malformed and should be discarded
 
+#define AREF_CSV_NOTDONE(ret) ((ret) > 0)
+
 /**
  * @brief Reads and processes a line of CSV.
  *

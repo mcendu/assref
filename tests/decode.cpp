@@ -29,24 +29,6 @@ class TestDecode : public TestDatabase
 
 };
 
-TEST_F(TestDecode, poolentry)
-{
-	aref_mapdata mapdata;
-	FILE *f = fopen("tests/data/poolentry.csv", "r");
-
-	aref_decodepoolentry(&mapdata, f);
-	ASSERT_STREQ(mapdata.code, "rc1");
-	ASSERT_EQ(mapdata.beatmapid, 3861836);
-	ASSERT_EQ(mapdata.mode, 3);
-	aref_decodepoolentry(&mapdata, f);
-	ASSERT_STREQ(mapdata.code, "rc2");
-	ASSERT_EQ(mapdata.beatmapid, 3573500);
-	aref_decodepoolentry(&mapdata, f);
-	ASSERT_STREQ(mapdata.code, "rc3");
-	aref_decodepoolentry(&mapdata, f);
-	ASSERT_STREQ(mapdata.code, "rc4");
-}
-
 TEST_F(TestDecode, pool)
 {
 	ASSERT_NE(db, nullptr);
