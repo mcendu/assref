@@ -55,4 +55,6 @@ FILE *rep_freopen(const char *path, const char *mode, FILE *f)
 	return _wfreopen(utf16path, utf16mode, f);
 }
 
+#else
+typedef void make_compiler_happy;
 #endif /* _WIN32 */
