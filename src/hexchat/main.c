@@ -24,6 +24,8 @@
 #include <string.h>
 #include <strings.h>
 
+#include "os.h"
+
 hexchat_plugin *ph = NULL;
 static struct plugindata plugindata = {NULL};
 

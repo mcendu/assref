@@ -23,6 +23,7 @@
 
 #include <decode.h>
 #include <mappool.h>
+#include "os.h"
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"

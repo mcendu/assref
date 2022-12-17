@@ -2,6 +2,7 @@ mod_src = [
 	'load.c',
 	'main.c',
 	'mappool.c',
+	'win32.c',
 ]
 
 mod = shared_module('assref_hexchat', mod_src,
