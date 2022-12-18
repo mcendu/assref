@@ -60,6 +60,24 @@ TEST(TestCsv, line)
 	EXPECT_EQ(aref_readcsvline(f, &t, test_fields), AREF_CSV_DONE);
 }
 
+TEST(TestCsv, fieldstrBoundcheck)
+{
+	const int bufsize = 8;
+	const char *toolong = "To be or not to be, that is the question.";
+	const char *exactly_bufsize_except_ending_null = "Required";
+	const char *just_the_right_size = "Inquiry";
+	char *dststr = new char[8];
+	void *dst = dststr;
+	ASSERT_EQ(AREF_FIELD_STR(dst, toolong, bufsize), AREF_CSV_MALFORMED);
+	ASSERT_EQ(AREF_FIELD_STR(dst, exactly_bufsize_except_ending_null, bufsize),
+			  AREF_CSV_MALFORMED);
+
+	dststr[7] = ' ';
+	ASSERT_EQ(AREF_FIELD_STR(dst, just_the_right_size, bufsize), AREF_CSV_OK);
+	ASSERT_STREQ(just_the_right_size, dststr);
+	delete[] dststr;
+}
+
 TEST(TestCsv, fieldbasic)
 {
 	char str[8];

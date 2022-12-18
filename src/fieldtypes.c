@@ -164,10 +164,11 @@ int AREF_FIELD_DOUBLE(void *dst, const char *raw, size_t size)
 
 int AREF_FIELD_STR(void *dst, const char *raw, size_t size)
 {
-	if (strlen(raw) + 1 > size)
+	size_t min_bufsize = strlen(raw) + 1;
+	if (min_bufsize > size)
 		return AREF_CSV_MALFORMED;
 
 	char *result = dst;
-	strcpy(result, raw);
+	memcpy(result, raw, min_bufsize);
 	return AREF_CSV_OK;
 }
