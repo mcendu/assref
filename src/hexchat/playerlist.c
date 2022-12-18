@@ -17,44 +17,36 @@
  *
  */
 
+#include "plugindata.h"
+
+#include <errno.h>
+#include <string.h>
+
 #include <decode.h>
-
-#include <gtest/gtest.h>
-
-#include <mappool.h>
 #include <playerlist.h>
-#include "dbtest.h"
 
-class TestDecode : public TestDatabase
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+
+void arefxchat_loadplayerlist(struct plugindata *data, char **word,
+							  char **word_eol)
 {
+	if (word_eol[0][0] == 0) {
+		hexchat_print(ph, "No player list specified");
+		return;
+	}
 
-};
+	FILE *f = fopen(word_eol[0], "r");
+	if (f == NULL) {
+		hexchat_printf(ph, "Cannot open player list %s: %s", word_eol[0],
+					   strerror(errno));
+		return;
+	}
 
-TEST_F(TestDecode, pool)
-{
-	ASSERT_NE(db, nullptr);
-	aref_mapdata data;
-
-	FILE *f = fopen("tests/data/pool.csv", "r");
-	ASSERT_NE(f, nullptr);
-	EXPECT_EQ(aref_loadmappool(db, f), 11);
+	int loaded = aref_loadplayerlist(data->db, f);
 	fclose(f);
 
-	aref_mappool_find(db, "rc4", &data);
-	EXPECT_STREQ(data.code, "rc4");
-	EXPECT_EQ(data.beatmapid, 2717089);
-
-	sqlite3_exec(db, "DELETE FROM mappool;", 0, 0, 0);
+	hexchat_printf(ph, "Loaded %d player entries from %s", loaded, word_eol[0]);
 }
 
-TEST_F(TestDecode, players)
-{
-	ASSERT_NE(db, nullptr);
-
-	FILE *f = fopen("tests/data/players.csv", "r");
-	ASSERT_NE(f, nullptr);
-	EXPECT_EQ(aref_loadplayerlist(db, f), 7);
-	fclose(f);
-
-	sqlite3_exec(db, "DELETE FROM players;", 0, 0, 0);
-}
+#pragma GCC diagnostic pop

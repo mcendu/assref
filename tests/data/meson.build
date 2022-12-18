@@ -5,6 +5,7 @@ testdata_src = [
 	'escape.csv',
 	'line.csv',
 	'multiline.csv',
+	'players.csv',
 	'pool.csv',
 	'poolentry.csv',
 	'toolong.csv',

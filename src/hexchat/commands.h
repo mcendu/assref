@@ -51,6 +51,9 @@ extern void arefxchat_load(struct plugindata *, char **, char **);
 extern void arefxchat_loadmappool(struct plugindata *, char **, char **);
 extern void arefxchat_setmap(struct plugindata *, char **, char **);
 
+/* Player list */
+extern void arefxchat_loadplayerlist(struct plugindata *, char **, char **);
+
 /* Misc functions */
 extern int init_database(struct plugindata *);
 extern int load_database(struct plugindata *, char *path);

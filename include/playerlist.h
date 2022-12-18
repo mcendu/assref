@@ -42,7 +42,7 @@ typedef struct {
 	char team[56];
 } aref_player;
 
-extern const char *aref_playerlist_insertion_query;
+extern const char *aref_playerlist_insert_query;
 extern const char *aref_playerlist_find_query;
 
 extern int aref_playerlist_insert(sqlite3 *, aref_player *playerdata);

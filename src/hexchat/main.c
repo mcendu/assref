@@ -36,6 +36,9 @@ const struct arefxchat_command command_list[] = {
 	 arefxchat_setmap},
 	{"MAPPOOL", "Usage: AREF MAPPOOL <path>, loads a mappool from CSV",
 	 arefxchat_loadmappool},
+	{"PLAYERLIST",
+	 "Usage: AREF PLAYERLIST <path>, loads a player list from CSV",
+	 arefxchat_loadplayerlist},
 	{NULL, NULL, NULL}};
 
 void list_commands()

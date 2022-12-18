@@ -2,6 +2,7 @@ mod_src = [
 	'load.c',
 	'main.c',
 	'mappool.c',
+	'playerlist.c',
 	'win32.c',
 ]
 

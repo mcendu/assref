@@ -25,7 +25,7 @@
 
 static const char insertion_query[]
 	= u8"REPLACE INTO players (username,id,team) VALUES(:name,:id,:team)";
-const char *aref_playerlist_insertion_query = insertion_query;
+const char *aref_playerlist_insert_query = insertion_query;
 
 int aref_playerlist_insert(sqlite3 *db, aref_player *p)
 {
