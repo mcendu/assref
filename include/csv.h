@@ -98,10 +98,8 @@ typedef struct aref_fielddef {
  * you should define extern "C" friend functions of the class in question,
  * and put `{0, your_friend_function, 0}` in your definition list.
  */
-#define AREF_FIELD(type, field, process_func, size)                            \
-	(aref_fielddef{                                                                          \
-		offsetof(type, field), (process_func), (size)                          \
-	})
+#define AREF_FIELD(type, field, process_func, size) \
+	(aref_fielddef{offsetof(type, field), (process_func), (size)})
 /**
  * @brief End a CSV field definition. This macro _must_ be used at the
  * end of a list of CSV field definitions.
@@ -111,17 +109,17 @@ typedef struct aref_fielddef {
 /**
  * @brief Instruct how a specific CSV field is processed.
  */
-#define AREF_FIELD(type, field, process_func, size)                            \
-	{                                                                          \
-		offsetof(type, field), (process_func), (size)                          \
+#define AREF_FIELD(type, field, process_func, size)   \
+	{                                                 \
+		offsetof(type, field), (process_func), (size) \
 	}
 /**
  * @brief End a CSV field definition. This macro _must_ be used at the
  * end of a list of CSV field definitions.
  */
-#define AREF_FIELDDEF_END                                                      \
-	{                                                                          \
-		0, NULL, 0                                                             \
+#define AREF_FIELDDEF_END \
+	{                     \
+		0, NULL, 0        \
 	}
 #endif
 
