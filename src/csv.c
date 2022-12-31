@@ -22,6 +22,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <textio.h>
+
 int aref_readcsvline(FILE *f, void *dst, const aref_fielddef *defs)
 {
 	if (aref_eof(f))
@@ -86,7 +88,7 @@ static inline int parse_char(int *c, char **it, char *end, int *quote,
 		return 0;
 	}
 
-	if (*it != end && *c != '\r') {
+	if (*it != end) {
 		**it = (char)*c;
 		++(*it), ++(*count);
 	} else {
@@ -110,7 +112,7 @@ size_t aref_readfield(char *i, FILE *f, size_t size, char *last)
 	int q = 0;
 	char lastread = 0;
 
-	while ((c = getc(f)), 1) {
+	while ((c = aref_getc(f)), 1) {
 		if (!parse_char(&c, &i, bufend, &q, lastread, &wcount))
 			break;
 		lastread = c;
@@ -145,7 +147,7 @@ size_t aref_sreadfield(char *i, const char *j, size_t size, char *last)
 size_t aref_fskipline(FILE *f)
 {
 	size_t result = 0;
-	for (char c = getc(f); c != '\n' && c != EOF; c = getc(f))
+	for (char c = aref_getc(f); c != '\n' && c != EOF; c = aref_getc(f))
 		++result;
 	return result + 1;
 }
@@ -153,8 +155,9 @@ size_t aref_fskipline(FILE *f)
 int aref_eof(FILE *f)
 {
 	int c;
-	while ((c = getc(f)), c == '\n' || c == '\r')
-		; // gobble up empty lines
+	// gobble up empty lines
+	while ((c = aref_getc(f)) == '\n')
+		;
 	if (c == EOF)
 		return 1;
 	ungetc(c, f);
