@@ -1,0 +1,3 @@
+This line has the rightful Unix line endings.
+This line ends the DOS way.
+This is a line ending in the long gone ways of classic Mac.This is just another line.

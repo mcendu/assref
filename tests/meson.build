@@ -2,6 +2,7 @@ tests_src = [
 	'csv.cpp',
 	'dbtest.cpp',
 	'decode.cpp',
+	'io.cpp',
 	'mappool.cpp',
 ]
 

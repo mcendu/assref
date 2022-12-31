@@ -3,6 +3,7 @@ src = [
 	'db.c',
 	'decode.c',
 	'fieldtypes.c',
+	'io.c',
 	'mappool.c',
 	'playerlist.c',
 ]
