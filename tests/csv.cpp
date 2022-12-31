@@ -66,7 +66,7 @@ TEST(TestCsv, fieldstrBoundcheck)
 	const char *toolong = "To be or not to be, that is the question.";
 	const char *exactly_bufsize_except_ending_null = "Required";
 	const char *just_the_right_size = "Inquiry";
-	char *dststr = new char[8];
+	char *dststr = new char[bufsize];
 	void *dst = dststr;
 	ASSERT_EQ(AREF_FIELD_STR(dst, toolong, bufsize), AREF_CSV_MALFORMED);
 	ASSERT_EQ(AREF_FIELD_STR(dst, exactly_bufsize_except_ending_null, bufsize),
@@ -200,7 +200,8 @@ TEST(TestCsv, fieldcrlf)
 {
 	char str[8];
 	char end;
-	FILE *f = fopen("tests/data/crlf.csv", "r");
+	// "b" in mode string disables newline conversion on Windows
+	FILE *f = fopen("tests/data/crlf.csv", "rb");
 	ASSERT_NE(f, nullptr);
 
 	aref_readfield(str, f, 8, &end);
