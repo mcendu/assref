@@ -32,10 +32,9 @@ extern "C" struct test_struct {
 };
 
 const aref_fielddef test_fields[]
-	= {{offsetof(test_struct, str), AREF_FIELD_STR, 8},
-	   {offsetof(test_struct, integer), AREF_FIELD_INT32, sizeof(int32_t)},
-	   {offsetof(test_struct, real), AREF_FIELD_FLOAT, sizeof(float)},
-	   AREF_FIELDDEF_END};
+	= {AREF_FIELD(test_struct, str, AREF_FIELD_STR, 8),
+	   AREF_FIELD(test_struct, integer, AREF_FIELD_INT32, 0),
+	   AREF_FIELD(test_struct, real, AREF_FIELD_FLOAT, 0), AREF_FIELDDEF_END};
 
 TEST(TestCsv, line)
 {

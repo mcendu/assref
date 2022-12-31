@@ -37,6 +37,43 @@ extern "C" {
 
 /**
  * @brief Defines how a CSV field is processed.
+ *
+ * @remarks The field definition format is optimized for parsing CSV data
+ * into a C structure, with the AREF_FIELD macro and library built-in
+ * callbacks supporting such a use.
+ *
+ * In C++, you can still use AREF_FIELD with standard-layout types (i.e.
+ * any T where std::is_standard_layout<T> is true). If this function is
+ * applied to non-standard-layout types, however, none of AREF_FIELD and
+ * the built-in callbacks can be used, as offsetof are unusable on such
+ * types. Instead, you should define extern "C" friend callbacks to load
+ * data:
+ *
+ * @code
+ * // Foo.h
+ * class Foo {
+ * private:
+ *     int bar;
+ *     // ...
+ *     extern "C" friend int foo_load_field_bar(void *, const char *, size_t);
+ *     // ...
+ * }
+ *
+ * // csv/Foo.cpp
+ * extern "C" int foo_load_field_bar(void *dst, const char *str, size_t)
+ * {
+ *     Foo *foo = dst;
+ *     foo->bar = std::strtol(str, nullptr, 10);
+ * }
+ *
+ * // ...
+ *
+ * static const aref_fielddef defs[] = {
+ *     // ...
+ *     { 0, load_field_bar, 0 }
+ *     // ...
+ * };
+ * @endcode
  */
 typedef struct aref_fielddef {
 	/**
@@ -53,7 +90,40 @@ typedef struct aref_fielddef {
 	size_t size;
 } aref_fielddef;
 
-#define AREF_FIELDDEF_END {0, NULL, 0}
+#ifdef __cplusplus
+/**
+ * @brief Instruct how a specific CSV field is processed.
+ *
+ * Do not use this macro if your class is not standard-layout. Instead,
+ * you should define extern "C" friend functions of the class in question,
+ * and put `{0, your_friend_function, 0}` in your definition list.
+ */
+#define AREF_FIELD(type, field, process_func, size)                            \
+	(aref_fielddef{                                                                          \
+		offsetof(type, field), (process_func), (size)                          \
+	})
+/**
+ * @brief End a CSV field definition. This macro _must_ be used at the
+ * end of a list of CSV field definitions.
+ */
+#define AREF_FIELDDEF_END (aref_fielddef{0, NULL, 0})
+#else
+/**
+ * @brief Instruct how a specific CSV field is processed.
+ */
+#define AREF_FIELD(type, field, process_func, size)                            \
+	{                                                                          \
+		offsetof(type, field), (process_func), (size)                          \
+	}
+/**
+ * @brief End a CSV field definition. This macro _must_ be used at the
+ * end of a list of CSV field definitions.
+ */
+#define AREF_FIELDDEF_END                                                      \
+	{                                                                          \
+		0, NULL, 0                                                             \
+	}
+#endif
 
 #define AREF_CSV_ERROR -1    // irrecoverable error
 #define AREF_CSV_OK 0        // general ok result
@@ -69,7 +139,7 @@ typedef struct aref_fielddef {
  * @param file File to read.
  * @param dst The destination to which data is written.
  * @param defs An AREF_FIELDDEF_END-terminated list of field definitions.
- * @return
+ * @return Zero if the line has been processed succesfully; non-zero otherwise.
  */
 extern int aref_readcsvline(FILE *file, void *dst, const aref_fielddef *defs);
 
