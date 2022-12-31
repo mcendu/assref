@@ -28,7 +28,7 @@ const char refstring[]
 	  "This is a line ending in the long gone ways of classic Mac.\n"
 	  "This is just another line.\n";
 
-TEST(TestSomething, lineconv)
+TEST(TestIO, lineconv)
 {
 	int c;
 	FILE *f = fopen("tests/data/getc.txt", "rb");
