@@ -2,8 +2,8 @@ tests_src = [
 	'csv.cpp',
 	'dbtest.cpp',
 	'decode.cpp',
-	'io.cpp',
 	'mappool.cpp',
+	'textio.cpp',
 ]
 
 has_cxx = add_languages('cpp', native: false, required: false)

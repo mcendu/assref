@@ -3,9 +3,9 @@ src = [
 	'db.c',
 	'decode.c',
 	'fieldtypes.c',
-	'io.c',
 	'mappool.c',
 	'playerlist.c',
+	'textio.c',
 ]
 
 hexchat_dep = dependency('hexchat-plugin', required: false)
