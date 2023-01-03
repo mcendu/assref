@@ -27,6 +27,9 @@ extern "C" {
 #include <sqlite3.h>
 #include <stdint.h>
 
+/**
+ * @brief Describes a participant of the tournament.
+ */
 typedef struct {
 	/**
 	 * @brief The name of the player.
@@ -45,7 +48,21 @@ typedef struct {
 extern const char *aref_playerlist_insert_query;
 extern const char *aref_playerlist_find_query;
 
+/**
+ * @brief Insert a player entry into the database.
+ *
+ * @param playerdata The data of the player.
+ * @return Whether the insertion succeeded.
+ */
 extern int aref_playerlist_insert(sqlite3 *, aref_player *playerdata);
+/**
+ * @brief Look up a player entry by name.
+ *
+ * @param playername The name of the player.
+ * @param out If a player is found, the player entry would be written
+ *  to the pointer passed here.
+ * @return Whether a player is found.
+ */
 extern int aref_playerlist_find(sqlite3 *, const char *playername,
 								aref_player *out);
 

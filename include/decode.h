@@ -29,14 +29,14 @@ extern "C" {
 #include <stdio.h>
 
 /**
- * @brief Loads a mappool from CSV into the database.
+ * @brief Load a mappool from CSV into the database.
  * @param file The file to read data from.
  * @return The number of entries read.
  */
 extern int aref_loadmappool(sqlite3 *, FILE *file);
 
 /**
- * @brief Loads a CSV player list into the database.
+ * @brief Load a player list from CSV into the database.
  * @param file The file to read data from.
  * @return The number of entries read.
  */

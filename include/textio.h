@@ -26,6 +26,13 @@ extern "C" {
 
 #include <stdio.h>
 
+/**
+ * @brief Read a character from `file`, converting CRLF and CR newlines
+ * to `\\n`.
+ *
+ * @return The character read as an `unsigned char` cast to an `int`
+ *  or EOF on end of file or error.
+ */
 extern int aref_getc(FILE *file);
 
 #ifdef __cplusplus

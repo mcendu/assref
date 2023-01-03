@@ -36,7 +36,12 @@ extern "C" {
  */
 extern int aref_db_open(const char *filename, sqlite3 **cursor);
 
-extern int aref_db_migrate(sqlite3 *cursor);
+/**
+ * @brief Migrate an assref database to the latest schema revision.
+ *
+ * @return The result of the operation.
+ */
+extern int aref_db_migrate(sqlite3 *);
 
 #ifdef __cplusplus
 }

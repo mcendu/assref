@@ -27,6 +27,9 @@ extern "C" {
 #include <stdint.h>
 #include <sqlite3.h>
 
+/**
+ * @brief Describes an entry in the mappool.
+ */
 typedef struct aref_mapdata {
 	/**
 	 * @brief A codename used to identify the beatmap.
@@ -42,16 +45,15 @@ typedef struct aref_mapdata {
 	uint64_t beatmapid;
 } aref_mapdata;
 
+/**
+ * @brief Represents an osu! gamemode.
+ */
 enum aref_mode {
 	AREF_MODE_STD,
 	AREF_MODE_TAIKO,
 	AREF_MODE_CATCH,
 	AREF_MODE_MANIA
 };
-
-/*
- * Methods
- */
 
 /**
  * @brief Add a new beatmap to the mappool.
