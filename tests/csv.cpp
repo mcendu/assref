@@ -57,6 +57,23 @@ TEST(TestCsv, line)
 	EXPECT_EQ(aref_readcsvline(f, &t, test_fields), AREF_CSV_LINE);
 
 	EXPECT_EQ(aref_readcsvline(f, &t, test_fields), AREF_CSV_DONE);
+
+	fclose(f);
+}
+
+const aref_fielddef test_fields_notrailing[] = {
+	AREF_FIELD(test_struct, str, AREF_FIELD_STR, 8),
+	AREF_FIELD(test_struct, integer, AREF_FIELD_INT32, 0), AREF_FIELDDEF_END};
+
+TEST(TestCsv, notrailinglf)
+{
+	test_struct t;
+	FILE *f = fopen("tests/data/notrailing.csv", "rb");
+
+	EXPECT_EQ(aref_readcsvline(f, &t, test_fields_notrailing), AREF_CSV_LINE);
+	EXPECT_EQ(aref_readcsvline(f, &t, test_fields_notrailing), AREF_CSV_LINE);
+
+	fclose(f);
 }
 
 TEST(TestCsv, fieldstrBoundcheck)
