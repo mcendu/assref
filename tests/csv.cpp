@@ -217,7 +217,7 @@ TEST(TestCsv, fieldnotrailinglf)
 {
 	char str[8];
 	char end;
-	FILE *f = fopen("tests/data/crlf.csv", "rb");
+	FILE *f = fopen("tests/data/notrailing.csv", "rb");
 
 	aref_readfield(str, f, 8, &end);
 	aref_readfield(str, f, 8, &end);
