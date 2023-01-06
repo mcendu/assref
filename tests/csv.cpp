@@ -213,6 +213,22 @@ TEST(TestCsv, fieldcrlf)
 	fclose(f);
 }
 
+TEST(TestCsv, fieldnotrailinglf)
+{
+	char str[8];
+	char end;
+	FILE *f = fopen("tests/data/crlf.csv", "rb");
+
+	aref_readfield(str, f, 8, &end);
+	aref_readfield(str, f, 8, &end);
+	aref_readfield(str, f, 8, &end);
+	aref_readfield(str, f, 8, &end);
+	EXPECT_EQ(end, EOF);
+	EXPECT_STREQ(str, "175");
+
+	fclose(f);
+}
+
 TEST(TestCsv, fieldtoolong)
 {
 	char str[8];

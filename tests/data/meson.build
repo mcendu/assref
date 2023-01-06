@@ -6,6 +6,7 @@ testdata_src = [
 	'getc.txt',
 	'line.csv',
 	'multiline.csv',
+	'notrailing.csv',
 	'players.csv',
 	'pool.csv',
 	'poolentry.csv',
