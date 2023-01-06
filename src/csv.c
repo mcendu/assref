@@ -33,7 +33,7 @@ int aref_readcsvline(FILE *f, void *dst, const aref_fielddef *defs)
 	char last = 0;
 
 	for (const aref_fielddef *field = defs; field->process != NULL; ++field) {
-		if (last == '\n')
+		if (last == '\n' || last == EOF)
 			return AREF_CSV_MALFORMED; // too few fields
 		aref_readfield(buf, f, 128, &last);
 
@@ -48,7 +48,7 @@ int aref_readcsvline(FILE *f, void *dst, const aref_fielddef *defs)
 		}
 	}
 
-	if (last != '\n') {
+	if (last != '\n' && last != EOF) {
 		aref_fskipline(f);
 		return AREF_CSV_MALFORMED; // too many fields
 	}
