@@ -28,9 +28,9 @@ class TestDatabase : public ::testing::Test
   public:
 	static sqlite3 *db;
 
-	static void SetUpTestSuite();
+	virtual void SetUp() override;
 
-	static void TearDownTestSuite();
+	virtual void TearDown() override;
 };
 
 extern testing::AssertionResult DbAccessSuccess(int code, char *error);

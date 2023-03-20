@@ -26,12 +26,12 @@
 
 sqlite3 *TestDatabase::db = 0;
 
-void TestDatabase::SetUpTestSuite()
+void TestDatabase::SetUp()
 {
 	aref_db_open("", &db);
 }
 
-void TestDatabase::TearDownTestSuite()
+void TestDatabase::TearDown()
 {
 	sqlite3_close(db);
 }
