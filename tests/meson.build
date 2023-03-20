@@ -3,6 +3,7 @@ tests_src = [
 	'dbtest.cpp',
 	'decode.cpp',
 	'mappool.cpp',
+	'match.cpp',
 	'textio.cpp',
 ]
 
