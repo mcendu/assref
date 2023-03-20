@@ -35,6 +35,8 @@ const char current_schema[]
 	  u8"   id INTEGER,"
 	  u8"   team VARCHAR(63));"
 
+	  u8"CREATE INDEX players_id_index ON players (id);"
+
 	  // set migration revision
 	  u8"REPLACE INTO aref_metadata (key, value) VALUES('revision', 1);"
 
@@ -43,6 +45,7 @@ const char current_schema[]
 const aref_migration *aref_migrations[] = {
 	&aref_dbmigration_initial_migration,
 	&aref_dbmigration_add_players,
+	&aref_dbmigration_index_player_id,
 	NULL /* allows easy checking if a migration is latest */
 };
 

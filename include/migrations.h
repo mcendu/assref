@@ -42,6 +42,7 @@ typedef struct aref_migration {
 
 extern const aref_migration aref_dbmigration_initial_migration;
 extern const aref_migration aref_dbmigration_add_players;
+extern const aref_migration aref_dbmigration_index_player_id;
 
 extern const aref_migration *aref_migrations[];
 
