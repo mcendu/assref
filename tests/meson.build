@@ -4,6 +4,7 @@ tests_src = [
 	'decode.cpp',
 	'mappool.cpp',
 	'match.cpp',
+	'playerlist.cpp',
 	'textio.cpp',
 ]
 
