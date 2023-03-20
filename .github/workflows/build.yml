@@ -25,10 +25,14 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install \
-          meson \
+          ninja-build \
           libgtest-dev \
           hexchat-dev \
-          libsqlite3-dev \
+          libsqlite3-dev
+        # Unfortunately jammy does not come with an up-to-date meson,
+        # so we have to grab one elsewhere
+        sudo apt-get install python3-pip
+        pip3 install meson
 
     - name: Configure project
       run: |
