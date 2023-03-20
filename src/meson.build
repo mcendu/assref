@@ -4,6 +4,7 @@ src = [
 	'decode.c',
 	'fieldtypes.c',
 	'mappool.c',
+	'match.c',
 	'playerlist.c',
 	'textio.c',
 ]
