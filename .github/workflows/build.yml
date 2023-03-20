@@ -41,8 +41,11 @@ jobs:
     - name: Build
       run: |
         ninja -C builddir
-        meson test --verbose -C builddir
         ninja -C builddir install
+
+    - name: Test
+      run: |
+        meson test -C builddir
 
     - name: Package
       if: github.event_name == 'push'
@@ -97,8 +100,11 @@ jobs:
     - name: Build
       run: |
         ninja -C builddir
-        meson test --verbose -C builddir
         ninja -C builddir install
+
+    - name: Test
+      run: |
+        meson test -C builddir
 
     - name: Package
       if: github.event_name == 'push'
