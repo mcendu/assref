@@ -23,14 +23,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-static const char insertion_query[]
+static const char insert_query[]
 	= u8"REPLACE INTO players (username,id,team) VALUES(:name,:id,:team)";
-const char *aref_playerlist_insert_query = insertion_query;
+const char *aref_playerlist_insert_query = insert_query;
 
 int aref_playerlist_insert(sqlite3 *db, aref_player *p)
 {
 	sqlite3_stmt *query;
-	int status = sqlite3_prepare_v2(db, insertion_query, 64, &query, NULL);
+	int status = sqlite3_prepare_v2(db, insert_query, sizeof(insert_query),
+									&query, NULL);
 	if (status != SQLITE_OK)
 		return status; // failure
 
@@ -47,14 +48,41 @@ int aref_playerlist_insert(sqlite3 *db, aref_player *p)
 
 static const char find_query[]
 	= u8"SELECT username,id,team FROM players WHERE username=?";
+const char *aref_playerlist_find_query = find_query;
 
 int aref_playerlist_find(sqlite3 *db, const char *name, aref_player *out)
 {
 	sqlite3_stmt *query;
-	int status = sqlite3_prepare_v2(db, find_query, 54, &query, NULL);
+	int status
+		= sqlite3_prepare_v2(db, find_query, sizeof(find_query), &query, NULL);
 	if (status != SQLITE_OK)
 		return status;
 	sqlite3_bind_text(query, 1, name, -1, SQLITE_STATIC);
+
+	if ((status = sqlite3_step(query)) == SQLITE_ROW) {
+		strncpy(out->name, (const char *)sqlite3_column_text(query, 0), 15);
+		out->name[15] = 0;
+		strncpy(out->team, (const char *)sqlite3_column_text(query, 2), 55);
+		out->team[55] = 0;
+		out->serverid = sqlite3_column_int64(query, 1);
+	}
+
+	sqlite3_finalize(query);
+	return !(status == SQLITE_ROW);
+}
+
+static const char find_by_id_query[]
+	= u8"SELECT username,id,team FROM players WHERE id=?";
+const char *aref_playerlist_find_by_id_query = find_by_id_query;
+
+int aref_playerlist_find_by_id(sqlite3 *db, uint64_t id, aref_player *out)
+{
+	sqlite3_stmt *query;
+	int status = sqlite3_prepare_v2(db, find_by_id_query,
+									sizeof(find_by_id_query), &query, NULL);
+	if (status != SQLITE_OK)
+		return status;
+	sqlite3_bind_int64(query, 1, id);
 
 	if ((status = sqlite3_step(query)) == SQLITE_ROW) {
 		strncpy(out->name, (const char *)sqlite3_column_text(query, 0), 15);

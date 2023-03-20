@@ -47,6 +47,7 @@ typedef struct {
 
 extern const char *aref_playerlist_insert_query;
 extern const char *aref_playerlist_find_query;
+extern const char *aref_playerlist_find_by_id_query;
 
 /**
  * @brief Insert a player entry into the database.
@@ -65,6 +66,15 @@ extern int aref_playerlist_insert(sqlite3 *, aref_player *playerdata);
  */
 extern int aref_playerlist_find(sqlite3 *, const char *playername,
 								aref_player *out);
+/**
+ * @brief Look up a player entry by ID.
+ *
+ * @param playername The name of the player.
+ * @param out If a player is found, the player entry would be written
+ *  to the pointer passed here.
+ * @return Whether a player is found.
+ */
+extern int aref_playerlist_find_by_id(sqlite3 *, uint64_t id, aref_player *out);
 
 #ifdef __cplusplus
 }
