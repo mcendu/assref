@@ -41,6 +41,10 @@ struct arefxchat_command {
 	void (*callback)(struct plugindata *, char **word, char **word_eol);
 };
 
+extern const struct arefxchat_command command_list[];
+
+extern int run_ref_command(char **word, char **word_eol, void *userdata);
+
 /* Help */
 extern void arefxchat_help(struct plugindata *, char **, char **);
 

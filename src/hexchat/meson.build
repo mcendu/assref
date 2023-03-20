@@ -1,4 +1,6 @@
 mod_src = [
+	'commands.c',
+	'help.c',
 	'load.c',
 	'main.c',
 	'mappool.c',

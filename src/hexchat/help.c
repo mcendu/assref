@@ -18,39 +18,39 @@
  */
 
 #include "commands.h"
-#include "plugindata.h"
 
-#include <stdlib.h>
-#include <string.h>
 #include <strings.h>
 
-hexchat_plugin *ph = NULL;
-static struct plugindata plugindata = {NULL};
+void list_commands()
+{
+	hexchat_print(ph, "AREF subcommands:");
+	for (const struct arefxchat_command *i = command_list; i->name != NULL;
+		 ++i) {
+		hexchat_printf(ph, "    %s", i->name);
+	}
+}
+
+void find_help(char *command)
+{
+	for (const struct arefxchat_command *i = command_list; i->name != NULL;
+		 ++i) {
+		if (strcasecmp(i->name, command) == 0) {
+			hexchat_print(ph, i->helptext);
+			return;
+		}
+	}
+
+	hexchat_printf(ph, "Not an AssRef command: %s", command);
+	list_commands();
+}
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
-int hexchat_plugin_init(hexchat_plugin *xchat, char **plugin_name,
-						char **plugin_desc, char **plugin_version, char *arg)
+void arefxchat_help(struct plugindata *data, char **word, char **word_eol)
 {
-	ph = xchat;
-
-	*plugin_name = "assref";
-	*plugin_desc = "osu! tournament referee's robotic assistant";
-	*plugin_version = "0.1";
-
-	init_database(&plugindata);
-
-	hexchat_hook_command(ph, "aref", HEXCHAT_PRI_NORM, run_ref_command,
-						 "Usage: AREF <subcommand> ...", &plugindata);
-
-	hexchat_print(ph, "AssRef loaded.");
-	return 1;
-}
-
-int hexchat_plugin_deinit(hexchat_plugin *xchat)
-{
-	sqlite3_close(plugindata.db);
-	hexchat_print(ph, "AssRef unloaded.");
-	return 1;
+	if (word[0][0] == 0)
+		list_commands();
+	else
+		find_help(word[0]);
 }
 #pragma GCC diagnostic pop
