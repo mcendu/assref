@@ -10,7 +10,7 @@ has_cxx = add_languages('cpp', native: false, required: false)
 gtest_dep = dependency('gtest', main: true, required: false)
 
 if not (has_cxx and gtest_dep.found())
-	warning('Required programs and libraries missing. Tests will not be built.')
+	warning('Requirements of testing unsatisfied -- tests will not be built')
 	subdir_done()
 endif
 
@@ -20,4 +20,4 @@ tests = executable('testassref', tests_src,
 
 subdir('data')
 
-test('gtest test', tests, protocol: 'gtest', timeout: 600)
+test('gtest testsuite', tests, protocol: 'gtest', timeout: 600, verbose: true)

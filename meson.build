@@ -1,5 +1,5 @@
 project('assref', 'c',
-	meson_version: '>=0.55.0',
+	meson_version: '>=0.62.0',
 	license: 'MIT',
 	default_options: [
 		'c_std=c11',
