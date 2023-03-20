@@ -1,2 +1,4 @@
-option('static_sqlite', type: 'boolean', value: false,
-	description: 'Links against a static SQLite')
+option('with_static_sqlite', type: 'boolean', value: false,
+	description: 'Prefer static SQLite instead of shared')
+option('with_hexchat', type: 'boolean', value: true,
+	description: 'Build HexChat plugin')

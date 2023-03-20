@@ -94,7 +94,7 @@ jobs:
           --backend ninja \
           --buildtype ${{ matrix.buildtype }} \
           --prefix="${{ env.prefix }}" \
-          -Dstatic_sqlite=true \
+          -Dwith_static_sqlite=true \
           builddir
 
     - name: Build

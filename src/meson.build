@@ -9,8 +9,9 @@ src = [
 	'textio.c',
 ]
 
-hexchat_dep = dependency('hexchat-plugin', required: false)
-sqlite3_dep = dependency('sqlite3', static: get_option('static_sqlite'))
+hexchat_dep = dependency('hexchat-plugin',
+	required: get_option('with_hexchat'))
+sqlite3_dep = dependency('sqlite3', static: get_option('with_static_sqlite'))
 
 lib_deps = [sqlite3_dep]
 
@@ -24,6 +25,6 @@ dep = declare_dependency(
 	dependencies: lib_deps,
 	include_directories: inc)
 
-if hexchat_dep.found()
+if get_option('with_hexchat')
 	subdir('hexchat')
 endif
