@@ -36,7 +36,7 @@ typedef struct {
 	 */
 	char name[16];
 	/**
-	 * @brief The number of the player on osu! servers.
+	 * @brief The numeric identifier of the player on osu!.
 	 */
 	uint64_t serverid;
 	/**
