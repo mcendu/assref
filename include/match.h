@@ -26,11 +26,30 @@ extern "C" {
 
 #include <playerlist.h>
 
+/**
+ * @brief Represents the current state of a match.
+ */
 typedef struct aref_match {
+	/**
+	 * Name of red team.
+	 */
 	char red[56];
+	/**
+	 * Name of blue team.
+	 */
 	char blue[56];
+	/**
+	 * Number of wins for team red.
+	 */
 	int red_score;
+	/**
+	 * Number of wins for team blue.
+	 */
 	int blue_score;
+	/**
+	 * Number of wins required to win the match.
+	 */
+	int first_to;
 } aref_match;
 
 /**
@@ -43,6 +62,19 @@ typedef struct aref_match {
  * otherwise.
  */
 extern int aref_player_in_match(aref_match *match, aref_player *player);
+
+/**
+ * @brief Determine the winner from the scores each player recieved.
+ *
+ * @param red_scores A list of individual scores for team red.
+ * @param red_team_size Number of team red players in the game.
+ * @param blue_scores A list of individual scores for team red.
+ * @param blue_team_size Number of team blue players in the game.
+ * @return Positive number if red wins, Negative if blue wins, or 0 in
+ * a tie.
+ */
+extern int aref_aggregate_score(int *red_scores, int red_team_size,
+								int *blue_scores, int blue_team_size);
 
 #ifdef __cplusplus
 }

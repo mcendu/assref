@@ -30,3 +30,13 @@ int aref_player_in_match(aref_match *match, aref_player *player)
 	if (in_blue == 0) return -1;
 	return 0;
 }
+
+int aref_aggregate_score(int *rindivid, int rsize, int *bindivid, int bsize)
+{
+	int rtotal = 0, btotal = 0;
+	for (int i = 0; i < rsize; ++i)
+		rtotal += rindivid[i];
+	for (int i = 0; i < bsize; ++i)
+		btotal += bindivid[i];
+	return rtotal - btotal;
+}
