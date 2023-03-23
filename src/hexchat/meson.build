@@ -8,7 +8,7 @@ hexchat_plugin_src = [
 	'win32.c',
 ]
 
-hexchat_plugin = shared_module('assref_hexchat', mod_src,
+hexchat_plugin = shared_module('assref_hexchat', hexchat_plugin_src,
 	include_directories: inc,
 	dependencies: [lib_deps, dep, hexchat_dep],
 	install: true,
