@@ -1,4 +1,4 @@
-mod_src = [
+hexchat_plugin_src = [
 	'commands.c',
 	'help.c',
 	'load.c',
@@ -8,7 +8,7 @@ mod_src = [
 	'win32.c',
 ]
 
-mod = shared_module('assref_hexchat', mod_src,
+hexchat_plugin = shared_module('assref_hexchat', mod_src,
 	include_directories: inc,
 	dependencies: [lib_deps, dep, hexchat_dep],
 	install: true,
